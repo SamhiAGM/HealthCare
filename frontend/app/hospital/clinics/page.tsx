@@ -16,6 +16,13 @@ export default function HospitalClinicsPage() {
     { id: '4', name: 'Neurology Clinic', day: 'Thursday', time: '09:00 - 13:00', room: 'Room 5', capacity: 30, status: 'Inactive' },
   ];
 
+  const [toast, setToast] = useState<{show: boolean, message: string, type: 'success' | 'info'}>({ show: false, message: '', type: 'info' });
+
+  const showToast = (message: string, type: 'success' | 'info' = 'info') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
@@ -25,7 +32,7 @@ export default function HospitalClinicsPage() {
           </h1>
           <p style={{ color: 'var(--text-secondary)' }}>Manage hospital clinic schedules, capacities, and operations.</p>
         </div>
-        <Button variant="primary" onClick={() => alert("Add New Clinic form will open here.")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Button variant="primary" onClick={() => showToast("Add New Clinic form will open here.", 'info')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Plus size={16} /> Add New Clinic
         </Button>
       </div>
@@ -86,10 +93,10 @@ export default function HospitalClinicsPage() {
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right' }}>
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                      <button onClick={() => alert(`Editing ${clinic.name}`)} style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--teal)', cursor: 'pointer' }} aria-label="Edit">
+                      <button onClick={() => showToast(`Editing ${clinic.name}`, 'info')} style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--teal)', cursor: 'pointer' }} aria-label="Edit">
                         <Edit2 size={16} />
                       </button>
-                      <button onClick={() => alert(`Deleting ${clinic.name}`)} style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: '#DC2626', cursor: 'pointer' }} aria-label="Delete">
+                      <button onClick={() => showToast(`Deleting ${clinic.name}`, 'info')} style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: '#DC2626', cursor: 'pointer' }} aria-label="Delete">
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -100,6 +107,18 @@ export default function HospitalClinicsPage() {
           </table>
         </div>
       </div>
+
+      {/* Floating Toast Notification */}
+      {toast.show && (
+        <div style={{ 
+            position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 100,
+            background: toast.type === 'success' ? '#059669' : '#1F2937', color: 'white',
+            padding: '1rem 1.5rem', borderRadius: 12, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)',
+            display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 600
+        }}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }

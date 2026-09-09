@@ -16,23 +16,29 @@ export default function HospitalQueuePage() {
 
   const [currentServing, setCurrentServing] = useState(14);
   const [waiting, setWaiting] = useState(46);
+  const [toast, setToast] = useState<{show: boolean, message: string, type: 'success' | 'info'}>({ show: false, message: '', type: 'info' });
+
+  const showToast = (message: string, type: 'success' | 'info' = 'info') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+  };
 
   const handleCallNext = () => {
     if (waiting > 0) {
       setCurrentServing(prev => prev + 1);
       setWaiting(prev => prev - 1);
-      alert(`Calling Ticket C-${String(currentServing + 1).padStart(3, '0')} via PA System!`);
+      showToast(`Calling Ticket C-${String(currentServing + 1).padStart(3, '0')} via PA System!`, 'success');
     } else {
-      alert("No more patients waiting in this clinic.");
+      showToast("No more patients waiting in this clinic.", 'info');
     }
   };
 
   const handleComplete = () => {
-    alert(`Ticket C-${String(currentServing).padStart(3, '0')} marked as Completed.`);
+    showToast(`Ticket C-${String(currentServing).padStart(3, '0')} marked as Completed.`, 'success');
   };
 
   const handleNoShow = () => {
-    alert(`Ticket C-${String(currentServing).padStart(3, '0')} marked as No Show.`);
+    showToast(`Ticket C-${String(currentServing).padStart(3, '0')} marked as No Show.`, 'info');
     if (waiting > 0) {
       setCurrentServing(prev => prev + 1);
       setWaiting(prev => prev - 1);
@@ -87,7 +93,7 @@ export default function HospitalQueuePage() {
                   <Users size={16} /> {waiting} Patients Waiting
                 </div>
               </div>
-              <Button variant="secondary" onClick={() => { setWaiting(w => w + 1); alert("Walk-in patient added to queue."); }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Button variant="secondary" onClick={() => { setWaiting(w => w + 1); showToast("Walk-in patient added to queue.", 'success'); }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <UserPlus size={16} /> Add Walk-in
               </Button>
             </div>
@@ -112,6 +118,24 @@ export default function HospitalQueuePage() {
           </div>
         </div>
       </div>
+
+      {/* Floating Toast Notification */}
+      {toast.show && (
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          exit={{ opacity: 0, y: 50 }}
+          style={{ 
+            position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 100,
+            background: toast.type === 'success' ? '#059669' : '#1F2937', color: 'white',
+            padding: '1rem 1.5rem', borderRadius: 12, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)',
+            display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 600
+          }}
+        >
+          {toast.type === 'success' ? <CheckSquare size={20} /> : <AlertCircle size={20} />}
+          {toast.message}
+        </motion.div>
+      )}
     </div>
   );
 }

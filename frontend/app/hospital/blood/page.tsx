@@ -12,9 +12,16 @@ export default function HospitalBloodBankPage() {
     { group: 'B-', units: 8, status: 'critical', lastUpdated: '30 mins ago' },
     { group: 'O+', units: 34, status: 'moderate', lastUpdated: '1 hour ago' },
     { group: 'O-', units: 2, status: 'critical', lastUpdated: '10 mins ago' },
-    { group: 'AB+', units: 22, status: 'moderate', lastUpdated: '4 hours ago' },
-    { group: 'AB-', units: 5, status: 'critical', lastUpdated: '1 hour ago' },
+    { id: '7', group: 'AB+', units: 22, status: 'moderate', lastUpdated: '4 hours ago' },
+    { id: '8', group: 'AB-', units: 5, status: 'critical', lastUpdated: '1 hour ago' },
   ];
+
+  const [toast, setToast] = useState<{show: boolean, message: string, type: 'success' | 'info'}>({ show: false, message: '', type: 'info' });
+
+  const showToast = (message: string, type: 'success' | 'info' = 'info') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: 1000, margin: '0 auto' }}>
@@ -25,7 +32,7 @@ export default function HospitalBloodBankPage() {
           </h1>
           <p style={{ color: 'var(--text-secondary)' }}>Manage hospital blood reserves and trigger donor alerts.</p>
         </div>
-        <Button variant="secondary" onClick={() => alert("Syncing with National Blood Transfusion Service DB...")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Button variant="secondary" onClick={() => showToast("Syncing with National Blood Transfusion Service DB...", 'info')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <RefreshCw size={16} /> Sync with National DB
         </Button>
       </div>
@@ -37,7 +44,7 @@ export default function HospitalBloodBankPage() {
             <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#991B1B', marginBottom: '0.25rem' }}>Critical Shortage Alert</h2>
             <p style={{ color: '#B91C1C', fontSize: '0.9375rem', margin: 0 }}>Multiple blood groups are at critical levels (O-, B-, AB-). You can trigger a local donor alert for registered donors in your district.</p>
           </div>
-          <Button variant="danger" onClick={() => alert("SMS alerts successfully dispatched to local registered donors!")} style={{ whiteSpace: 'nowrap' }}>Trigger Donor SMS Alert</Button>
+          <Button variant="danger" onClick={() => showToast("SMS alerts successfully dispatched to local registered donors!", 'success')} style={{ whiteSpace: 'nowrap' }}>Trigger Donor SMS Alert</Button>
         </div>
       )}
 
@@ -60,11 +67,23 @@ export default function HospitalBloodBankPage() {
             </div>
             
             <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
-              <Button variant="secondary" size="sm" onClick={() => alert(`Update stock for blood group ${bg.group}`)} style={{ flex: 1, padding: '0.375rem' }}>Update Stock</Button>
+              <Button variant="secondary" size="sm" onClick={() => showToast(`Update stock for blood group ${bg.group}`, 'info')} style={{ flex: 1, padding: '0.375rem' }}>Update Stock</Button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Floating Toast Notification */}
+      {toast.show && (
+        <div style={{ 
+            position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 100,
+            background: toast.type === 'success' ? '#059669' : '#1F2937', color: 'white',
+            padding: '1rem 1.5rem', borderRadius: 12, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)',
+            display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 600
+        }}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }

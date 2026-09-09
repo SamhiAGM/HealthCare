@@ -15,6 +15,13 @@ export default function HospitalStaffPage() {
     { id: '5', name: 'Dr. R. Jayakody', role: 'Consultant', department: 'Neurology', phone: '078 567 8901', email: 'r.jayakody@nhsl.gov.lk', status: 'Active' },
   ];
 
+  const [toast, setToast] = useState<{show: boolean, message: string, type: 'success' | 'info'}>({ show: false, message: '', type: 'info' });
+
+  const showToast = (message: string, type: 'success' | 'info' = 'info') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
@@ -24,7 +31,7 @@ export default function HospitalStaffPage() {
           </h1>
           <p style={{ color: 'var(--text-secondary)' }}>Manage hospital staff access, roles, and contact information.</p>
         </div>
-        <Button variant="primary" onClick={() => alert("Add Staff Member dialog will appear here.")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Button variant="primary" onClick={() => showToast("Add Staff Member dialog will appear here.", 'info')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <UserPlus size={16} /> Add Staff Member
         </Button>
       </div>
@@ -95,7 +102,7 @@ export default function HospitalStaffPage() {
                     )}
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right' }}>
-                    <button onClick={() => alert(`Edit profile for ${s.name}`)} style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--teal)', cursor: 'pointer' }} aria-label="Edit">
+                    <button onClick={() => showToast(`Edit profile for ${s.name}`, 'info')} style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--teal)', cursor: 'pointer' }} aria-label="Edit">
                       <Edit2 size={16} />
                     </button>
                   </td>
@@ -105,6 +112,18 @@ export default function HospitalStaffPage() {
           </table>
         </div>
       </div>
+
+      {/* Floating Toast Notification */}
+      {toast.show && (
+        <div style={{ 
+            position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 100,
+            background: toast.type === 'success' ? '#059669' : '#1F2937', color: 'white',
+            padding: '1rem 1.5rem', borderRadius: 12, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)',
+            display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 600
+        }}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }

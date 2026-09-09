@@ -12,6 +12,13 @@ export default function HospitalBedsPage() {
     { id: '5', name: 'Maternity Ward', type: 'Maternity', total: 50, occupied: 45, status: 'High' },
   ];
 
+  const [toast, setToast] = useState<{show: boolean, message: string, type: 'success' | 'info'}>({ show: false, message: '', type: 'info' });
+
+  const showToast = (message: string, type: 'success' | 'info' = 'info') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
@@ -21,7 +28,7 @@ export default function HospitalBedsPage() {
           </h1>
           <p style={{ color: 'var(--text-secondary)' }}>Track hospital bed occupancy across all wards and units.</p>
         </div>
-        <Button variant="primary" onClick={() => alert("Add Ward dialog will appear here.")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Button variant="primary" onClick={() => showToast("Add Ward dialog will appear here.", 'info')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Plus size={16} /> Add Ward
         </Button>
       </div>
@@ -40,7 +47,7 @@ export default function HospitalBedsPage() {
                   <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>{w.name}</h3>
                   <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{w.type}</div>
                 </div>
-                <button onClick={() => alert(`Edit details for ${w.name}`)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><Edit2 size={16} /></button>
+                <button onClick={() => showToast(`Edit details for ${w.name}`, 'info')} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><Edit2 size={16} /></button>
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.75rem' }}>
@@ -57,13 +64,25 @@ export default function HospitalBedsPage() {
               </div>
 
               <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem' }}>
-                <Button variant="secondary" size="sm" onClick={() => alert(`Patient admitted to ${w.name}`)} style={{ flex: 1 }}>Admit (+1)</Button>
-                <Button variant="secondary" size="sm" onClick={() => alert(`Patient discharged from ${w.name}`)} style={{ flex: 1 }}>Discharge (-1)</Button>
+                <Button variant="secondary" size="sm" onClick={() => showToast(`Patient admitted to ${w.name}`, 'success')} style={{ flex: 1 }}>Admit (+1)</Button>
+                <Button variant="secondary" size="sm" onClick={() => showToast(`Patient discharged from ${w.name}`, 'success')} style={{ flex: 1 }}>Discharge (-1)</Button>
               </div>
             </div>
           );
         })}
       </div>
+
+      {/* Floating Toast Notification */}
+      {toast.show && (
+        <div style={{ 
+            position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 100,
+            background: toast.type === 'success' ? '#059669' : '#1F2937', color: 'white',
+            padding: '1rem 1.5rem', borderRadius: 12, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)',
+            display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 600
+        }}>
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }
