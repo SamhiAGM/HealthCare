@@ -1,0 +1,13 @@
+services:
+  mongodb:
+    image: mongo:8
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - lankacare-mongodb:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: lankacare
+
+volumes:
+  lankacare-mongodb:

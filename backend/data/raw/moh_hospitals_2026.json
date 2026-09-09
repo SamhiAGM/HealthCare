@@ -1,0 +1,244 @@
+[
+  {
+    "province": "Western Province",
+    "districts": [
+      {
+        "district": "Colombo",
+        "hospitals": [
+          { "name": "National Hospital of Sri Lanka", "type": "National Hospital", "city": "Colombo", "lat": 6.9157, "lng": 79.8636, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Lady Ridgeway Hospital for Children", "type": "Specialized Teaching Hospital", "city": "Colombo", "lat": 6.9003, "lng": 79.8615, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Colombo South Teaching Hospital", "type": "Teaching Hospital", "city": "Kalubowila", "lat": 6.8488, "lng": 79.8896, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Homagama", "type": "Base Hospital Type A", "city": "Homagama", "lat": 6.8469, "lng": 80.0018, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "District General Hospital De Soysa (Materniry)", "type": "District General Hospital", "city": "Colombo", "lat": 6.9217, "lng": 79.8617, "emergency": false, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Eye Hospital Colombo", "type": "Specialized Hospital", "city": "Colombo", "lat": 6.9212, "lng": 79.8645, "emergency": false, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Apeksha Hospital (Cancer Hospital)", "type": "Specialized Hospital", "city": "Maharagama", "lat": 6.8486, "lng": 79.9273, "emergency": false, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Avissawella", "type": "Base Hospital Type A", "city": "Avissawella", "lat": 6.9515, "lng": 80.2111, "emergency": true, "pharmacy": true, "lab": true, "blood": false }
+        ]
+      },
+      {
+        "district": "Gampaha",
+        "hospitals": [
+          { "name": "District General Hospital Gampaha", "type": "District General Hospital", "city": "Gampaha", "lat": 7.0908, "lng": 79.9996, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Colombo North Teaching Hospital", "type": "Teaching Hospital", "city": "Ragama", "lat": 7.0288, "lng": 79.9193, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Negombo", "type": "District General Hospital", "city": "Negombo", "lat": 7.2094, "lng": 79.8380, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Wathupitiwala", "type": "Base Hospital Type A", "city": "Wathupitiwala", "lat": 7.1565, "lng": 80.0221, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Minuwangoda", "type": "Base Hospital Type A", "city": "Minuwangoda", "lat": 7.1686, "lng": 79.9495, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Kalutara",
+        "hospitals": [
+          { "name": "District General Hospital Kalutara", "type": "District General Hospital", "city": "Kalutara", "lat": 6.5833, "lng": 79.9607, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Panadura", "type": "Base Hospital Type A", "city": "Panadura", "lat": 6.7131, "lng": 79.9066, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Horana", "type": "Base Hospital Type B", "city": "Horana", "lat": 6.7160, "lng": 80.0610, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Central Province",
+    "districts": [
+      {
+        "district": "Kandy",
+        "hospitals": [
+          { "name": "National Hospital Kandy", "type": "National Hospital", "city": "Kandy", "lat": 7.2961, "lng": 80.6337, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Teaching Hospital Peradeniya", "type": "Teaching Hospital", "city": "Peradeniya", "lat": 7.2571, "lng": 80.5978, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Nawalapitiya", "type": "Base Hospital Type A", "city": "Nawalapitiya", "lat": 7.0541, "lng": 80.5321, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Gampola", "type": "Base Hospital Type A", "city": "Gampola", "lat": 7.1636, "lng": 80.5717, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Matale",
+        "hospitals": [
+          { "name": "District General Hospital Matale", "type": "District General Hospital", "city": "Matale", "lat": 7.4694, "lng": 80.6235, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Dambulla", "type": "Base Hospital Type A", "city": "Dambulla", "lat": 7.8674, "lng": 80.6517, "emergency": true, "pharmacy": true, "lab": true, "blood": false }
+        ]
+      },
+      {
+        "district": "Nuwara Eliya",
+        "hospitals": [
+          { "name": "District General Hospital Nuwara Eliya", "type": "District General Hospital", "city": "Nuwara Eliya", "lat": 6.9497, "lng": 80.7891, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Dickoya", "type": "Base Hospital Type A", "city": "Dickoya", "lat": 6.9215, "lng": 80.6344, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Ragala", "type": "Base Hospital Type B", "city": "Ragala", "lat": 7.0217, "lng": 80.8821, "emergency": false, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Southern Province",
+    "districts": [
+      {
+        "district": "Galle",
+        "hospitals": [
+          { "name": "Teaching Hospital Karapitiya", "type": "Teaching Hospital", "city": "Galle", "lat": 6.0637, "lng": 80.2134, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Balapitiya", "type": "Base Hospital Type A", "city": "Balapitiya", "lat": 6.2710, "lng": 80.0398, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Elpitiya", "type": "Base Hospital Type B", "city": "Elpitiya", "lat": 6.2933, "lng": 80.1625, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Matara",
+        "hospitals": [
+          { "name": "District General Hospital Matara", "type": "District General Hospital", "city": "Matara", "lat": 5.9496, "lng": 80.5353, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Kamburupitiya", "type": "Base Hospital Type A", "city": "Kamburupitiya", "lat": 6.0541, "lng": 80.5710, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Akuressa", "type": "Base Hospital Type A", "city": "Akuressa", "lat": 6.0984, "lng": 80.4983, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Hambantota",
+        "hospitals": [
+          { "name": "District General Hospital Hambantota", "type": "District General Hospital", "city": "Hambantota", "lat": 6.1241, "lng": 81.1185, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Tangalle", "type": "Base Hospital Type A", "city": "Tangalle", "lat": 6.0229, "lng": 80.7959, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Northern Province",
+    "districts": [
+      {
+        "district": "Jaffna",
+        "hospitals": [
+          { "name": "Teaching Hospital Jaffna", "type": "Teaching Hospital", "city": "Jaffna", "lat": 9.6615, "lng": 80.0255, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Point Pedro", "type": "Base Hospital Type A", "city": "Point Pedro", "lat": 9.8190, "lng": 80.2336, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Chavakachcheri", "type": "Base Hospital Type B", "city": "Chavakachcheri", "lat": 9.6564, "lng": 80.1675, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Kilinochchi",
+        "hospitals": [
+          { "name": "District General Hospital Kilinochchi", "type": "District General Hospital", "city": "Kilinochchi", "lat": 9.3970, "lng": 80.3989, "emergency": true, "pharmacy": true, "lab": true, "blood": false }
+        ]
+      },
+      {
+        "district": "Mannar",
+        "hospitals": [
+          { "name": "District General Hospital Mannar", "type": "District General Hospital", "city": "Mannar", "lat": 8.9804, "lng": 79.9040, "emergency": true, "pharmacy": true, "lab": true, "blood": false }
+        ]
+      },
+      {
+        "district": "Mullaitivu",
+        "hospitals": [
+          { "name": "District General Hospital Mullaitivu", "type": "District General Hospital", "city": "Mullaitivu", "lat": 9.2670, "lng": 80.8126, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Vavuniya",
+        "hospitals": [
+          { "name": "District General Hospital Vavuniya", "type": "District General Hospital", "city": "Vavuniya", "lat": 8.7513, "lng": 80.4976, "emergency": true, "pharmacy": true, "lab": true, "blood": false }
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Eastern Province",
+    "districts": [
+      {
+        "district": "Trincomalee",
+        "hospitals": [
+          { "name": "District General Hospital Trincomalee", "type": "District General Hospital", "city": "Trincomalee", "lat": 8.5874, "lng": 81.2152, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Kinniya", "type": "Base Hospital Type B", "city": "Kinniya", "lat": 8.4708, "lng": 81.2060, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Kantale", "type": "Base Hospital Type A", "city": "Kantale", "lat": 8.3980, "lng": 81.0345, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Mutur", "type": "Base Hospital Type B", "city": "Mutur", "lat": 8.4479, "lng": 81.2745, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Batticaloa",
+        "hospitals": [
+          { "name": "Teaching Hospital Batticaloa", "type": "Teaching Hospital", "city": "Batticaloa", "lat": 7.7286, "lng": 81.6901, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Valaichchenai", "type": "Base Hospital Type A", "city": "Valaichchenai", "lat": 7.9980, "lng": 81.5547, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Kaluwanchikudy", "type": "Base Hospital Type B", "city": "Kaluwanchikudy", "lat": 7.7500, "lng": 81.7000, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Ampara",
+        "hospitals": [
+          { "name": "District General Hospital Ampara", "type": "District General Hospital", "city": "Ampara", "lat": 7.2989, "lng": 81.6718, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Kalmunai North", "type": "Base Hospital Type A", "city": "Kalmunai", "lat": 7.4153, "lng": 81.8252, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Ashraff Memorial Hospital", "type": "Base Hospital Type A", "city": "Kalmunai", "lat": 7.4100, "lng": 81.8200, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Mahaoya", "type": "Base Hospital Type B", "city": "Mahaoya", "lat": 7.3497, "lng": 81.2993, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      }
+    ]
+  },
+  {
+    "province": "North Western Province",
+    "districts": [
+      {
+        "district": "Kurunegala",
+        "hospitals": [
+          { "name": "Teaching Hospital Kurunegala", "type": "Teaching Hospital", "city": "Kurunegala", "lat": 7.4863, "lng": 80.3645, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Kuliyapitiya", "type": "Base Hospital Type A", "city": "Kuliyapitiya", "lat": 7.4702, "lng": 80.0413, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Maho", "type": "Base Hospital Type B", "city": "Maho", "lat": 7.8638, "lng": 80.2808, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Puttalam",
+        "hospitals": [
+          { "name": "Base Hospital Puttalam", "type": "Base Hospital Type A", "city": "Puttalam", "lat": 8.0343, "lng": 79.8280, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "District General Hospital Chilaw", "type": "District General Hospital", "city": "Chilaw", "lat": 7.5752, "lng": 79.7965, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Marawila", "type": "Base Hospital Type A", "city": "Marawila", "lat": 7.4856, "lng": 79.8734, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      }
+    ]
+  },
+  {
+    "province": "North Central Province",
+    "districts": [
+      {
+        "district": "Anuradhapura",
+        "hospitals": [
+          { "name": "Teaching Hospital Anuradhapura", "type": "Teaching Hospital", "city": "Anuradhapura", "lat": 8.3114, "lng": 80.4037, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Thambuththegama", "type": "Base Hospital Type A", "city": "Thambuththegama", "lat": 8.1480, "lng": 80.6890, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Polonnaruwa",
+        "hospitals": [
+          { "name": "District General Hospital Polonnaruwa", "type": "District General Hospital", "city": "Polonnaruwa", "lat": 7.9397, "lng": 81.0000, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Medirigiriya", "type": "Base Hospital Type B", "city": "Medirigiriya", "lat": 8.0820, "lng": 80.8829, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Uva Province",
+    "districts": [
+      {
+        "district": "Badulla",
+        "hospitals": [
+          { "name": "Provincial General Hospital Badulla", "type": "District General Hospital", "city": "Badulla", "lat": 6.9934, "lng": 81.0550, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Diyatalawa", "type": "Base Hospital Type A", "city": "Diyatalawa", "lat": 6.8272, "lng": 80.9991, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Mahiyanganaya", "type": "Base Hospital Type A", "city": "Mahiyanganaya", "lat": 7.3296, "lng": 81.0020, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Monaragala",
+        "hospitals": [
+          { "name": "District General Hospital Monaragala", "type": "District General Hospital", "city": "Monaragala", "lat": 6.8729, "lng": 81.3506, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Wellawaya", "type": "Base Hospital Type B", "city": "Wellawaya", "lat": 6.7351, "lng": 81.0997, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      }
+    ]
+  },
+  {
+    "province": "Sabaragamuwa Province",
+    "districts": [
+      {
+        "district": "Ratnapura",
+        "hospitals": [
+          { "name": "Teaching Hospital Ratnapura", "type": "Teaching Hospital", "city": "Ratnapura", "lat": 6.6828, "lng": 80.3992, "emergency": true, "pharmacy": true, "lab": true, "blood": true },
+          { "name": "Base Hospital Balangoda", "type": "Base Hospital Type A", "city": "Balangoda", "lat": 6.6500, "lng": 80.6980, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Embilipitiya", "type": "Base Hospital Type A", "city": "Embilipitiya", "lat": 6.3394, "lng": 80.8450, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      },
+      {
+        "district": "Kegalle",
+        "hospitals": [
+          { "name": "District General Hospital Kegalle", "type": "District General Hospital", "city": "Kegalle", "lat": 7.2513, "lng": 80.3464, "emergency": true, "pharmacy": true, "lab": true, "blood": false },
+          { "name": "Base Hospital Mawanella", "type": "Base Hospital Type A", "city": "Mawanella", "lat": 7.2534, "lng": 80.4574, "emergency": true, "pharmacy": true, "lab": false, "blood": false },
+          { "name": "Base Hospital Karawanella", "type": "Base Hospital Type A", "city": "Karawanella", "lat": 7.1868, "lng": 80.4932, "emergency": true, "pharmacy": true, "lab": false, "blood": false }
+        ]
+      }
+    ]
+  }
+]

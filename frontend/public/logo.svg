@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" fill="none" role="img" aria-label="LankaCare logo">
+  <!-- Island silhouette + Cross mark -->
+  <g transform="translate(4, 8)">
+    <!-- Sri Lanka simplified island shape -->
+    <path
+      d="M24 6 C20 6, 14 9, 12 14 C10 19, 10 24, 12 29 C14 35, 16 38, 20 42 C23 46, 25 48, 24 50 C24 51, 23 52, 24 52 C26 52, 28 49, 29 46 C31 41, 31 36, 30 31 C29 26, 30 22, 32 18 C34 14, 35 10, 32 7 C30 5, 27 5, 24 6Z"
+      fill="url(#islandGrad)"
+      opacity="0.9"
+    />
+    <!-- Healthcare cross -->
+    <rect x="18" y="16" width="14" height="4" rx="2" fill="white" opacity="0.95"/>
+    <rect x="23" y="11" width="4" height="14" rx="2" fill="white" opacity="0.95"/>
+    <!-- Heartbeat line -->
+    <path
+      d="M4 30 L10 30 L13 24 L17 36 L20 28 L23 32 L26 30 L44 30"
+      stroke="url(#heartbeatGrad)"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      fill="none"
+    />
+  </g>
+
+  <!-- Wordmark -->
+  <text
+    x="62"
+    y="36"
+    font-family="'Plus Jakarta Sans', 'Inter', sans-serif"
+    font-weight="800"
+    font-size="26"
+    letter-spacing="-0.5"
+    fill="url(#textGrad)"
+  >Lanka</text>
+  <text
+    x="148"
+    y="36"
+    font-family="'Plus Jakarta Sans', 'Inter', sans-serif"
+    font-weight="800"
+    font-size="26"
+    letter-spacing="-0.5"
+    fill="#0D9488"
+  >Care</text>
+
+  <!-- Tagline -->
+  <text
+    x="62"
+    y="51"
+    font-family="'Inter', sans-serif"
+    font-weight="400"
+    font-size="9"
+    letter-spacing="0.5"
+    fill="#64899E"
+    text-anchor="start"
+  >NATIONAL DIGITAL HEALTH PLATFORM</text>
+
+  <defs>
+    <linearGradient id="islandGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0369A1"/>
+      <stop offset="100%" stop-color="#0D9488"/>
+    </linearGradient>
+    <linearGradient id="heartbeatGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0369A1" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#0369A1" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#082F49"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+  </defs>
+</svg>
