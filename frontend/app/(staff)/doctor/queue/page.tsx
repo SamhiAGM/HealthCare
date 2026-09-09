@@ -70,47 +70,64 @@ export default function DoctorQueue() {
   };
 
   return (
-    <div style={{ maxWidth: 1000, margin: '0 auto', padding: '2rem 1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)' }}>Live Queue Management</h1>
-          <p style={{ color: 'var(--text-secondary)' }}>Today's patients for Medical Clinic</p>
-        </div>
-        <Button variant="primary" onClick={handleCallNext} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <PlayCircle size={18} /> Call Next Patient
-        </Button>
+    <div style={{ maxWidth: 1000, margin: '0 auto', padding: '2rem 1rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div>
+        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
+          <Clock size={24} color="var(--teal)" /> Live Queue Management
+        </h1>
+        <p style={{ color: 'var(--text-secondary)' }}>Today&apos;s patients for Medical Clinic</p>
       </div>
 
-      <div style={{ display: 'grid', gap: '1rem' }}>
-        {loading ? (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>Loading queue...</div>
-        ) : tokens.length === 0 ? (
-          <div className="lc-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            No patients waiting in the queue.
+      <div className="lc-card" style={{ padding: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <div style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Currently Serving</div>
+          <div style={{ fontSize: '4rem', fontWeight: 800, color: 'var(--teal)', lineHeight: 1, marginBottom: '0.5rem' }}>
+             {tokens.length > 0 ? tokens[0].tokenNumber : '--'}
           </div>
-        ) : (
-          tokens.map((token, idx) => (
-            <motion.div key={token._id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} className="lc-card" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--teal)', minWidth: '100px' }}>
-                  {token.tokenNumber}
-                </div>
-                <div>
-                  <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Patient ID: {token.citizenId}</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                    <Clock size={14} /> Status: {token.status}
+          <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-muted)' }}>
+             {tokens.length > 0 ? `Patient ID: ${tokens[0].citizenId}` : 'No active patient'}
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <Button onClick={() => tokens.length > 0 && handleStartConsultation(tokens[0]._id)} style={{ background: 'var(--teal)', color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 2rem', fontSize: '1.125rem' }}>
+            <PlayCircle size={20} /> Open Consultation
+          </Button>
+          <Button variant="secondary" onClick={handleCallNext} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+            Call Next Patient
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-primary)' }}>Waiting List ({tokens.length})</h2>
+        <div style={{ display: 'grid', gap: '1rem' }}>
+          {loading ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading queue...</div>
+          ) : tokens.length === 0 ? (
+            <div className="lc-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+              No patients waiting in the queue.
+            </div>
+          ) : (
+            tokens.slice(1).map((token, idx) => (
+              <motion.div key={token._id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} className="lc-card" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                  <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--text-muted)', minWidth: '100px' }}>
+                    {token.tokenNumber}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Patient ID: {token.citizenId}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                      <Clock size={14} /> Status: {token.status}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <Button variant="outline" size="sm">View Profile</Button>
-                <Button variant="primary" size="sm" onClick={() => handleStartConsultation('mock-id')} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  <PlayCircle size={14} /> Open Consultation
-                </Button>
-              </div>
-            </motion.div>
-          ))
-        )}
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <Button variant="secondary" size="sm">View Profile</Button>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
