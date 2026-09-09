@@ -139,7 +139,7 @@ export default function PharmacyDashboard() {
               </div>
 
               <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                <Button variant="outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Button variant="secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <AlertCircle size={16} /> Mark Out of Stock
                 </Button>
                 <Button variant="primary" onClick={() => handleDispense(rx._id)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
