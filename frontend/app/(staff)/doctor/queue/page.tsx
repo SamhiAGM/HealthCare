@@ -70,63 +70,76 @@ export default function DoctorQueue() {
   };
 
   return (
-    <div style={{ maxWidth: 1000, margin: '0 auto', padding: '2rem 1rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2rem 1rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
-          <Clock size={24} color="var(--teal)" /> Live Queue Management
+          <Clock size={24} color="var(--teal)" /> Live Queue Operations
         </h1>
-        <p style={{ color: 'var(--text-secondary)' }}>Today&apos;s patients for Medical Clinic</p>
+        <p style={{ color: 'var(--text-secondary)' }}>Manage your clinic queue, call tokens, and handle walk-ins.</p>
       </div>
 
-      <div className="lc-card" style={{ padding: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <div style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Currently Serving</div>
-          <div style={{ fontSize: '4rem', fontWeight: 800, color: 'var(--teal)', lineHeight: 1, marginBottom: '0.5rem' }}>
-             {tokens.length > 0 ? tokens[0].tokenNumber : '--'}
-          </div>
-          <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-muted)' }}>
-             {tokens.length > 0 ? `Patient ID: ${tokens[0].citizenId}` : 'No active patient'}
-          </div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <Button onClick={() => tokens.length > 0 && handleStartConsultation(tokens[0]._id)} style={{ background: 'var(--teal)', color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '1rem 2rem', fontSize: '1.125rem' }}>
-            <PlayCircle size={20} /> Open Consultation
-          </Button>
-          <Button variant="secondary" onClick={handleCallNext} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-            Call Next Patient
-          </Button>
-        </div>
-      </div>
-
-      <div>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-primary)' }}>Waiting List ({tokens.length})</h2>
-        <div style={{ display: 'grid', gap: '1rem' }}>
-          {loading ? (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>Loading queue...</div>
-          ) : tokens.length === 0 ? (
-            <div className="lc-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-              No patients waiting in the queue.
+      <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+        {/* Sidebar / List */}
+        <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-primary)' }}>My Queues</h2>
+          <div
+            style={{
+              padding: '1.25rem', background: 'var(--teal-soft)',
+              border: `2px solid var(--teal)`,
+              borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+              <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Medical Clinic</div>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, background: '#ECFDF5', color: '#059669', padding: '0.25rem 0.5rem', borderRadius: 999 }}>Active</div>
             </div>
-          ) : (
-            tokens.slice(1).map((token, idx) => (
-              <motion.div key={token._id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} className="lc-card" style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                  <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--text-muted)', minWidth: '100px' }}>
-                    {token.tokenNumber}
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Patient ID: {token.citizenId}</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                      <Clock size={14} /> Status: {token.status}
-                    </div>
-                  </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+              <span>Serving: <strong>{tokens.length > 0 ? tokens[0].tokenNumber.replace('C-', '') : '0'}</strong></span>
+              <span>Waiting: {Math.max(0, tokens.length - 1)}</span>
+            </div>
+            <div style={{ marginTop: '0.75rem', height: 4, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
+              <div style={{ height: '100%', background: 'var(--teal)', width: `50%` }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Control Panel */}
+        <div style={{ flex: '2 1 500px' }}>
+          <div className="lc-card" style={{ padding: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border)' }}>
+              <div>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>Medical Clinic</h2>
+                <div style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Users size={16} /> {Math.max(0, tokens.length - 1)} Patients Waiting
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <Button variant="secondary" size="sm">View Profile</Button>
-                </div>
-              </motion.div>
-            ))
-          )}
+              </div>
+              <Button variant="secondary" onClick={() => handleStartConsultation(tokens.length > 0 ? tokens[0]._id : '')} disabled={tokens.length === 0} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <PlayCircle size={16} /> Open Consultation
+              </Button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: '3rem' }}>
+              <div style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Currently Serving</div>
+              <div style={{ fontSize: '6rem', fontWeight: 800, color: 'var(--teal)', lineHeight: 1, marginBottom: '0.5rem' }}>
+                {tokens.length > 0 ? tokens[0].tokenNumber.replace('C-', '') : '--'}
+              </div>
+              <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-muted)' }}>
+                {tokens.length > 0 ? `Ticket: ${tokens[0].tokenNumber}` : 'No active patient'}
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+              <Button onClick={() => alert("Marked as No Show")} style={{ background: '#F3F4F6', color: '#4B5563', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem', height: 'auto' }}>
+                <CheckCircle size={24} style={{ opacity: 0.5 }} /> No Show
+              </Button>
+              <Button onClick={handleCallNext} style={{ background: 'var(--teal)', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem', height: 'auto' }}>
+                <PlayCircle size={24} /> Call Next ({Math.max(0, tokens.length - 1)})
+              </Button>
+              <Button onClick={() => alert("Marked as Complete")} style={{ background: '#16A34A', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem', height: 'auto' }}>
+                <CheckCircle size={24} /> Complete
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
