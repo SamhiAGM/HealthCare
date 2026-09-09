@@ -57,8 +57,8 @@ export default function HospitalBedsPage() {
               </div>
 
               <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.5rem' }}>
-                <Button variant="outline" size="sm" onClick={() => alert(`Patient admitted to ${w.name}`)} style={{ flex: 1 }}>Admit (+1)</Button>
-                <Button variant="outline" size="sm" onClick={() => alert(`Patient discharged from ${w.name}`)} style={{ flex: 1 }}>Discharge (-1)</Button>
+                <Button variant="secondary" size="sm" onClick={() => alert(`Patient admitted to ${w.name}`)} style={{ flex: 1 }}>Admit (+1)</Button>
+                <Button variant="secondary" size="sm" onClick={() => alert(`Patient discharged from ${w.name}`)} style={{ flex: 1 }}>Discharge (-1)</Button>
               </div>
             </div>
           );

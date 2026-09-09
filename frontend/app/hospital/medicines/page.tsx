@@ -25,7 +25,7 @@ export default function HospitalMedicinesPage() {
           <p style={{ color: 'var(--text-secondary)' }}>Update medicine availability to reflect in the citizen portal instantly.</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Button variant="outline" onClick={() => alert("Filter options will appear here.")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Button variant="secondary" onClick={() => alert("Filter options will appear here.")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Filter size={16} /> Filter
           </Button>
           <Button variant="primary" onClick={() => alert("Add Item form will appear here.")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -98,7 +98,7 @@ export default function HospitalMedicinesPage() {
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Updated {item.lastUpdated}</div>
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'right' }}>
-                      <Button variant="outline" size="sm" onClick={() => alert(`Update stock for ${item.name}`)}>Update</Button>
+                      <Button variant="secondary" size="sm" onClick={() => alert(`Update stock for ${item.name}`)}>Update</Button>
                     </td>
                   </tr>
                 ))}

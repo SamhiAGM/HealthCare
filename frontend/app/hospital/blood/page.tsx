@@ -25,7 +25,7 @@ export default function HospitalBloodBankPage() {
           </h1>
           <p style={{ color: 'var(--text-secondary)' }}>Manage hospital blood reserves and trigger donor alerts.</p>
         </div>
-        <Button variant="outline" onClick={() => alert("Syncing with National Blood Transfusion Service DB...")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Button variant="secondary" onClick={() => alert("Syncing with National Blood Transfusion Service DB...")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <RefreshCw size={16} /> Sync with National DB
         </Button>
       </div>
@@ -60,7 +60,7 @@ export default function HospitalBloodBankPage() {
             </div>
             
             <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
-              <Button variant="outline" size="sm" onClick={() => alert(`Update stock for blood group ${bg.group}`)} style={{ flex: 1, padding: '0.375rem' }}>Update Stock</Button>
+              <Button variant="secondary" size="sm" onClick={() => alert(`Update stock for blood group ${bg.group}`)} style={{ flex: 1, padding: '0.375rem' }}>Update Stock</Button>
             </div>
           </div>
         ))}

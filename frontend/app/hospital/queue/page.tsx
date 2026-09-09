@@ -87,7 +87,7 @@ export default function HospitalQueuePage() {
                   <Users size={16} /> {waiting} Patients Waiting
                 </div>
               </div>
-              <Button variant="outline" onClick={() => { setWaiting(w => w + 1); alert("Walk-in patient added to queue."); }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Button variant="secondary" onClick={() => { setWaiting(w => w + 1); alert("Walk-in patient added to queue."); }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <UserPlus size={16} /> Add Walk-in
               </Button>
             </div>
