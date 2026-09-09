@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { BedDouble, Users, Plus, Edit2 } from 'lucide-react';
 import { Button } from '@/components/Button';
 

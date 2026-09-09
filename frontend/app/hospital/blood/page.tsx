@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Droplets, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/Button';
 import { BloodStatusBadge } from '@/components/Badges';
