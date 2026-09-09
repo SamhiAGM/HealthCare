@@ -14,6 +14,31 @@ export default function HospitalQueuePage() {
     { clinic: 'Eye Clinic', serving: 8, total: 85, waiting: 77, status: 'Delayed' },
   ];
 
+  const [currentServing, setCurrentServing] = useState(14);
+  const [waiting, setWaiting] = useState(46);
+
+  const handleCallNext = () => {
+    if (waiting > 0) {
+      setCurrentServing(prev => prev + 1);
+      setWaiting(prev => prev - 1);
+      alert(`Calling Ticket C-${String(currentServing + 1).padStart(3, '0')} via PA System!`);
+    } else {
+      alert("No more patients waiting in this clinic.");
+    }
+  };
+
+  const handleComplete = () => {
+    alert(`Ticket C-${String(currentServing).padStart(3, '0')} marked as Completed.`);
+  };
+
+  const handleNoShow = () => {
+    alert(`Ticket C-${String(currentServing).padStart(3, '0')} marked as No Show.`);
+    if (waiting > 0) {
+      setCurrentServing(prev => prev + 1);
+      setWaiting(prev => prev - 1);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
@@ -59,28 +84,28 @@ export default function HospitalQueuePage() {
               <div>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>{activeClinic}</h2>
                 <div style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Users size={16} /> 46 Patients Waiting
+                  <Users size={16} /> {waiting} Patients Waiting
                 </div>
               </div>
-              <Button variant="outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Button variant="outline" onClick={() => { setWaiting(w => w + 1); alert("Walk-in patient added to queue."); }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <UserPlus size={16} /> Add Walk-in
               </Button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: '3rem' }}>
               <div style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>Currently Serving</div>
-              <div style={{ fontSize: '6rem', fontWeight: 800, color: 'var(--teal)', lineHeight: 1, marginBottom: '0.5rem' }}>14</div>
-              <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-muted)' }}>Ticket: C-014</div>
+              <div style={{ fontSize: '6rem', fontWeight: 800, color: 'var(--teal)', lineHeight: 1, marginBottom: '0.5rem' }}>{currentServing}</div>
+              <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-muted)' }}>Ticket: C-{String(currentServing).padStart(3, '0')}</div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-              <Button style={{ background: '#F3F4F6', color: '#4B5563', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem', height: 'auto' }}>
+              <Button onClick={handleNoShow} style={{ background: '#F3F4F6', color: '#4B5563', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem', height: 'auto' }}>
                 <SkipForward size={24} /> No Show
               </Button>
-              <Button style={{ background: 'var(--teal)', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem', height: 'auto' }}>
-                <Play size={24} /> Call Next (15)
+              <Button onClick={handleCallNext} style={{ background: 'var(--teal)', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem', height: 'auto' }}>
+                <Play size={24} /> Call Next ({waiting})
               </Button>
-              <Button style={{ background: '#16A34A', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem', height: 'auto' }}>
+              <Button onClick={handleComplete} style={{ background: '#16A34A', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem', height: 'auto' }}>
                 <CheckSquare size={24} /> Complete
               </Button>
             </div>

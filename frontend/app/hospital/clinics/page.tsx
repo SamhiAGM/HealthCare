@@ -25,7 +25,7 @@ export default function HospitalClinicsPage() {
           </h1>
           <p style={{ color: 'var(--text-secondary)' }}>Manage hospital clinic schedules, capacities, and operations.</p>
         </div>
-        <Button variant="primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Button variant="primary" onClick={() => alert("Add New Clinic form will open here.")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Plus size={16} /> Add New Clinic
         </Button>
       </div>
@@ -86,10 +86,10 @@ export default function HospitalClinicsPage() {
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right' }}>
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
-                      <button style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--teal)', cursor: 'pointer' }} aria-label="Edit">
+                      <button onClick={() => alert(`Editing ${clinic.name}`)} style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--teal)', cursor: 'pointer' }} aria-label="Edit">
                         <Edit2 size={16} />
                       </button>
-                      <button style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: '#DC2626', cursor: 'pointer' }} aria-label="Delete">
+                      <button onClick={() => alert(`Deleting ${clinic.name}`)} style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: '#DC2626', cursor: 'pointer' }} aria-label="Delete">
                         <Trash2 size={16} />
                       </button>
                     </div>

@@ -24,7 +24,7 @@ export default function HospitalStaffPage() {
           </h1>
           <p style={{ color: 'var(--text-secondary)' }}>Manage hospital staff access, roles, and contact information.</p>
         </div>
-        <Button variant="primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Button variant="primary" onClick={() => alert("Add Staff Member dialog will appear here.")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <UserPlus size={16} /> Add Staff Member
         </Button>
       </div>
@@ -95,7 +95,7 @@ export default function HospitalStaffPage() {
                     )}
                   </td>
                   <td style={{ padding: '1rem', textAlign: 'right' }}>
-                    <button style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--teal)', cursor: 'pointer' }} aria-label="Edit">
+                    <button onClick={() => alert(`Edit profile for ${s.name}`)} style={{ padding: '0.375rem', background: 'none', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--teal)', cursor: 'pointer' }} aria-label="Edit">
                       <Edit2 size={16} />
                     </button>
                   </td>

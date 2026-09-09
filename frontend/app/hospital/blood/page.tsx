@@ -25,7 +25,7 @@ export default function HospitalBloodBankPage() {
           </h1>
           <p style={{ color: 'var(--text-secondary)' }}>Manage hospital blood reserves and trigger donor alerts.</p>
         </div>
-        <Button variant="outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Button variant="outline" onClick={() => alert("Syncing with National Blood Transfusion Service DB...")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <RefreshCw size={16} /> Sync with National DB
         </Button>
       </div>
@@ -37,7 +37,7 @@ export default function HospitalBloodBankPage() {
             <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#991B1B', marginBottom: '0.25rem' }}>Critical Shortage Alert</h2>
             <p style={{ color: '#B91C1C', fontSize: '0.9375rem', margin: 0 }}>Multiple blood groups are at critical levels (O-, B-, AB-). You can trigger a local donor alert for registered donors in your district.</p>
           </div>
-          <Button variant="danger" style={{ whiteSpace: 'nowrap' }}>Trigger Donor SMS Alert</Button>
+          <Button variant="danger" onClick={() => alert("SMS alerts successfully dispatched to local registered donors!")} style={{ whiteSpace: 'nowrap' }}>Trigger Donor SMS Alert</Button>
         </div>
       )}
 
@@ -60,7 +60,7 @@ export default function HospitalBloodBankPage() {
             </div>
             
             <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
-              <Button variant="outline" size="sm" style={{ flex: 1, padding: '0.375rem' }}>Update Stock</Button>
+              <Button variant="outline" size="sm" onClick={() => alert(`Update stock for blood group ${bg.group}`)} style={{ flex: 1, padding: '0.375rem' }}>Update Stock</Button>
             </div>
           </div>
         ))}
