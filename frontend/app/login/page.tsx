@@ -13,8 +13,10 @@ import { Input } from '@/components/Input';
 import { Button } from '@/components/Button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
+const NIC_REGEX = /^([0-9]{9}[VvXx]|[0-9]{12})$/;
+
 const loginSchema = z.object({
-  identifier: z.string().min(3, 'Please enter your NIC, email, or mobile'),
+  identifier: z.string().regex(NIC_REGEX, 'Please enter a valid Sri Lankan NIC (e.g. 123456789V or 199012345678)'),
   password:   z.string().min(1, 'Password is required'),
   remember:   z.boolean().optional(),
 });
@@ -245,11 +247,11 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <Input
-                label="NIC / Email / Mobile"
+                label="National Identity Card (NIC)"
                 id="login-identifier"
                 type="text"
                 autoComplete="username"
-                placeholder="e.g. 199012345678 or user@email.com"
+                placeholder="e.g. 199012345678 or 123456789V"
                 error={errors.identifier?.message}
                 {...register('identifier')}
               />

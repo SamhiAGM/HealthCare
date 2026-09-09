@@ -156,12 +156,12 @@ async function seedData() {
   const argon2 = await import('argon2');
   
   const staffToCreate = [
-    { email: 'dr.smith@example.com', role: 'DOCTOR', name: 'Dr. Smith', id: 'D001' },
-    { email: 'admin@lankacare.lk', role: 'HOSPITAL_ADMIN', name: 'Admin', id: 'A001' },
-    { email: 'reception@example.com', role: 'RECEPTION_STAFF', name: 'Reception', id: 'R001' },
-    { email: 'lab@example.com', role: 'LAB_STAFF', name: 'Lab Tech', id: 'L001' },
-    { email: 'pharmacy@example.com', role: 'PHARMACIST', name: 'Pharmacist', id: 'P001' },
-    { email: 'ministry@lankacare.lk', role: 'MINISTRY_ADMIN', name: 'Ministry', id: 'M001' },
+    { email: 'dr.smith@example.com', role: 'DOCTOR', name: 'Dr. Smith', id: 'D001', nic: '198011111111' },
+    { email: 'admin@lankacare.lk', role: 'HOSPITAL_ADMIN', name: 'Admin', id: 'A001', nic: '198122222222' },
+    { email: 'reception@example.com', role: 'RECEPTION_STAFF', name: 'Reception', id: 'R001', nic: '198233333333' },
+    { email: 'lab@example.com', role: 'LAB_STAFF', name: 'Lab Tech', id: 'L001', nic: '198344444444' },
+    { email: 'pharmacy@example.com', role: 'PHARMACIST', name: 'Pharmacist', id: 'P001', nic: '198455555555' },
+    { email: 'ministry@lankacare.lk', role: 'MINISTRY_ADMIN', name: 'Ministry', id: 'M001', nic: '198566666666' },
   ];
 
   const defaultHospital = await Hospital.findOne({ slug: 'national-hospital-sri-lanka' });
@@ -171,8 +171,12 @@ async function seedData() {
     const existing = await User.findOne({ email: staff.email });
     if (!existing) {
       const passwordHash = await argon2.hash('password123', { type: argon2.argon2id });
+      const crypto = await import('crypto');
+      const nicHash = crypto.createHash('sha256').update(staff.nic.toUpperCase()).digest('hex');
+      
       await User.create({
         email: staff.email,
+        nicHash,
         mobile: '+9477000' + Math.floor(1000 + Math.random() * 9000),
         passwordHash,
         role: staff.role,
