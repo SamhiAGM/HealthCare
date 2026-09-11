@@ -10,7 +10,7 @@ export interface IQueueToken extends Document {
   displayOrder: number;    // numeric for sorting
   date: Date;
 
-  status: 'NotCheckedIn' | 'Waiting' | 'Approaching' | 'Called' | 'In-Consultation' | 'Completed' | 'Missed' | 'Cancelled';
+  status: 'NotCheckedIn' | 'Waiting' | 'WAITING' | 'Approaching' | 'Called' | 'CALLED' | 'In-Consultation' | 'IN_CONSULTATION' | 'Completed' | 'COMPLETED' | 'Missed' | 'Cancelled' | 'NO_RESPONSE' | 'RECALLED' | 'TEMPORARILY_SKIPPED';
 
   checkedInAt?: Date;
   calledAt?: Date;
@@ -18,6 +18,8 @@ export interface IQueueToken extends Document {
   completedAt?: Date;
 
   estimatedWaitMinutes?: number;
+  doctorId?: mongoose.Types.ObjectId;
+  recallCount?: number;
 }
 
 const queueTokenSchema = new Schema<IQueueToken>({
@@ -32,7 +34,7 @@ const queueTokenSchema = new Schema<IQueueToken>({
 
   status: {
     type: String,
-    enum: ['NotCheckedIn','Waiting','Approaching','Called','In-Consultation','Completed','Missed','Cancelled'],
+    enum: ['NotCheckedIn','Waiting','WAITING','Approaching','Called','CALLED','In-Consultation','IN_CONSULTATION','Completed','COMPLETED','Missed','Cancelled','NO_RESPONSE','RECALLED','TEMPORARILY_SKIPPED'],
     default: 'NotCheckedIn',
   },
 
@@ -41,6 +43,8 @@ const queueTokenSchema = new Schema<IQueueToken>({
   consultationStartAt:   { type: Date },
   completedAt:           { type: Date },
   estimatedWaitMinutes:  { type: Number },
+  doctorId:              { type: Schema.Types.ObjectId, ref: 'User' },
+  recallCount:           { type: Number, default: 0 },
 }, { timestamps: true });
 
 queueTokenSchema.index({ hospitalId: 1, date: 1, displayOrder: 1 });
