@@ -54,6 +54,11 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
           return;
         }
 
+        if (pathname.startsWith('/super-admin') && role !== 'SUPER_ADMIN') {
+          router.replace('/citizen/dashboard');
+          return;
+        }
+
         // Add more role guards here as needed
 
         setAuthorized(true);

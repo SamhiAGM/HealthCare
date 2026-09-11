@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Middleware to ensure user is from the MINISTRY
 const requireMinistry = (req: AuthRequest, res: Response, next: any) => {
-  if (req.user?.role !== 'MINISTRY') {
+  if (req.user?.role !== 'MINISTRY_ADMIN' && req.user?.role !== 'SUPER_ADMIN') {
     return res.status(403).json({ success: false, message: 'Ministry access required' });
   }
   next();

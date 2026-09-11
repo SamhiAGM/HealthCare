@@ -143,7 +143,7 @@ export default function ResetPasswordPage() {
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Minimum 8 chars, 1 uppercase, 1 number"
                       error={errors.newPassword?.message}
-                      disabled={!token || state === 'success'}
+                      disabled={!token}
                       {...register('newPassword')}
                     />
                     <button
@@ -173,7 +173,7 @@ export default function ResetPasswordPage() {
                       type={showConfirm ? 'text' : 'password'}
                       placeholder="Repeat your new password"
                       error={errors.confirmPassword?.message}
-                      disabled={!token || state === 'success'}
+                      disabled={!token}
                       {...register('confirmPassword')}
                     />
                     <button
@@ -192,7 +192,7 @@ export default function ResetPasswordPage() {
                     size="lg"
                     style={{ borderRadius: 12, marginTop: '0.5rem' }}
                     loading={state === 'loading'}
-                    disabled={!token || state === 'success'}
+                    disabled={!token}
                   >
                     Reset Password
                   </Button>

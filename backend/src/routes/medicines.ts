@@ -1,17 +1,17 @@
-import express from 'express';
+import express, { Response } from 'express';
 import { MedicineInventory } from '../models/MedicineInventory';
-import { authenticate, AuthRequest } from '../middleware/auth';
-import { Response } from 'express';
+import { authenticate, AuthRequest, requirePermission, requireHospitalScope } from '../middleware/auth';
 import { validateBody } from '../middleware/validate';
 import { z } from 'zod';
 import { Types } from 'mongoose';
 
 const router = express.Router();
 
-// GET /api/v1/medicines - Public route to check medicine availability across hospitals
-router.get('/', async (req, res) => {
+// GET /api/v1/medicines - Check medicine availability across hospitals
+router.get('/', authenticate, async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    const { hospitalId, genericName, status } = req.query;
+    const hospitalId = req.user?.hospitalId || req.query.hospitalId;
+    const { genericName, status } = req.query;
     const filter: any = {};
     
     if (hospitalId) filter.hospitalId = hospitalId;
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
     if (status) filter.status = status;
 
     const inventory = await MedicineInventory.find(filter)
-      .populate('hospitalId', 'name district')
+      .populate('hospitalId', 'officialName district')
       .sort({ genericName: 1 });
 
     res.json({ success: true, count: inventory.length, data: inventory });
@@ -30,17 +30,17 @@ router.get('/', async (req, res) => {
 
 // POST /api/v1/medicines - Update or Add medicine stock (Hospital Staff only)
 const updateStockSchema = z.object({
-  hospitalId: z.string().refine(val => Types.ObjectId.isValid(val), 'Invalid hospital ID'),
   brandName: z.string(),
   genericName: z.string(),
-  batchNumber: z.string(),
-  expiryDate: z.string(),
+  batchNumber: z.string().optional(),
+  expiryDate: z.string().optional(),
   stockLevel: z.number().int().min(0),
 });
 
-router.post('/', authenticate, validateBody(updateStockSchema), async (req: AuthRequest, res: Response): Promise<any> => {
+router.post('/', authenticate, requirePermission('inventory.manage'), requireHospitalScope, validateBody(updateStockSchema), async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    const { hospitalId, brandName, genericName, batchNumber, expiryDate, stockLevel } = req.body;
+    const { brandName, genericName, batchNumber, expiryDate, stockLevel } = req.body;
+    const hospitalId = req.user?.hospitalId;
     
     let availability = 'available';
     if (stockLevel === 0) availability = 'out-of-stock';
@@ -49,18 +49,24 @@ router.post('/', authenticate, validateBody(updateStockSchema), async (req: Auth
     let item = await MedicineInventory.findOne({ hospitalId, medicineName: brandName });
     
     if (item) {
+      item.stockLevel = stockLevel;
       item.availability = availability as any;
       item.lastUpdatedAt = new Date();
+      if (batchNumber && expiryDate) {
+         item.notes = `Batch: ${batchNumber}`;
+         item.expiryDate = new Date(expiryDate);
+      }
       await item.save();
     } else {
       item = new MedicineInventory({
         hospitalId,
         medicineName: brandName,
         genericName,
-        expiryDate: new Date(expiryDate),
+        stockLevel,
+        expiryDate: expiryDate ? new Date(expiryDate) : undefined,
         availability,
         lastUpdatedAt: new Date(),
-        notes: `Batch: ${batchNumber}, Stock: ${stockLevel}`
+        notes: batchNumber ? `Batch: ${batchNumber}` : undefined
       });
       await item.save();
     }

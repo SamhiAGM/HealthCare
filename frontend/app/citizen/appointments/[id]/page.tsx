@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 import {
   Calendar, Clock, MapPin, Building2, ChevronLeft,
-  AlertCircle, Download, FileText, CheckCircle
+  AlertCircle, Download, FileText, CheckCircle, XCircle
 } from 'lucide-react';
 import { Skeleton } from '@/components/Skeleton';
 import { Button } from '@/components/Button';

@@ -18,6 +18,16 @@ import ministryRoutes from './routes/ministry';
 import healthRecordRoutes from './routes/health-records';
 import labRoutes from './routes/lab';
 import adminRoutes from './routes/admin';
+import hospitalAdminRoutes from './routes/hospital-admin';
+import bedsRoutes from './routes/beds';
+import bloodRoutes from './routes/blood';
+import medicinesRoutes from './routes/medicines';
+import equipmentRoutes from './routes/equipment';
+import queuesRoutes from './routes/queues';
+import admissionsRoutes from './routes/admissions';
+import referralsRoutes from './routes/referrals';
+import auditRoutes from './routes/audit';
+import districtRoutes from './routes/district';
 import { restoreDatabase } from './utils/dbRestore';
 import { dumpDatabase } from './utils/dbDump';
 
@@ -33,6 +43,16 @@ app.use('/api/v1/ministry', ministryRoutes);
 app.use('/api/v1/health-records', healthRecordRoutes);
 app.use('/api/v1/lab', labRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/hospital-admin', hospitalAdminRoutes);
+app.use('/api/v1/beds', bedsRoutes);
+app.use('/api/v1/blood', bloodRoutes);
+app.use('/api/v1/medicines', medicinesRoutes);
+app.use('/api/v1/equipment', equipmentRoutes);
+app.use('/api/v1/queues', queuesRoutes);
+app.use('/api/v1/admissions', admissionsRoutes);
+app.use('/api/v1/referrals', referralsRoutes);
+app.use('/api/v1/audit', auditRoutes);
+app.use('/api/v1/district', districtRoutes);
 app.use('/api/v1/provinces', (_req, res) => res.redirect('/api/v1/hospitals/provinces/all'));
 app.use('/api/v1/districts', (_req, res) => res.redirect('/api/v1/hospitals/districts/all'));
 
@@ -152,7 +172,7 @@ async function seedData() {
   console.log(`[SEED] Completed: ${hospitalTotal} hospitals seeded across all 9 provinces.`);
 
   // Create demo staff accounts for testing
-  const { User } = await import('./models/User');
+  const { User } = await import('./models/User.js');
   const argon2 = await import('argon2');
   
   const staffToCreate = [

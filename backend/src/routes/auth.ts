@@ -719,7 +719,12 @@ router.get('/me', authenticate, async (req: AuthRequest, res: Response) => {
           .populate('districtId', 'nameEn')
       : null;
 
-    res.json({ user, citizen });
+    // Fetch permissions for the role
+    const { Role } = await import('../models/Role.js');
+    const roleDoc = await Role.findOne({ name: user.role });
+    const permissions = roleDoc ? roleDoc.permissions : [];
+
+    res.json({ user, citizen, permissions });
   } catch {
     res.status(500).json({ error: 'Failed to retrieve user' });
   }

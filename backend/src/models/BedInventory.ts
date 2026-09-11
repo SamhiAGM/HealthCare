@@ -8,7 +8,7 @@ export interface IBedInventory extends Document {
   available: number;
   reserved: number;
   unavailable: number;
-  publicStatus: 'Available' | 'Limited' | 'Near Capacity' | 'Full' | 'Unknown';
+  publicStatus: 'Available' | 'Limited' | 'Near Capacity' | 'Critical' | 'Full' | 'Unknown';
   lastUpdatedBy?: mongoose.Types.ObjectId;
   lastUpdatedAt: Date;
 }
@@ -27,7 +27,7 @@ const bedInventorySchema = new Schema<IBedInventory>({
   unavailable:    { type: Number, default: 0 },
   publicStatus: {
     type: String,
-    enum: ['Available','Limited','Near Capacity','Full','Unknown'],
+    enum: ['Available','Limited','Near Capacity','Critical','Full','Unknown'],
     default: 'Unknown',
   },
   lastUpdatedBy:  { type: Schema.Types.ObjectId, ref: 'User' },

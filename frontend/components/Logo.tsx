@@ -9,6 +9,7 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
   showTagline?: boolean;
   href?: string;
+  isDark?: boolean;
 }
 
 export function Logo({ size = 'md', showTagline = false, href = '/' }: LogoProps) {

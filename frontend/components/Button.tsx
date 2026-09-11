@@ -2,7 +2,7 @@
 
 import React, { forwardRef } from 'react';
 
-type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger';
+type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger' | 'outline';
 type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -22,6 +22,7 @@ const variantStyles: Record<ButtonVariant, string> = {
   accent: 'lc-btn-accent',
   ghost: 'lc-btn-ghost',
   danger: 'lc-btn-danger',
+  outline: 'lc-btn-secondary',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

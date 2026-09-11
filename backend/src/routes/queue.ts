@@ -54,13 +54,13 @@ const checkInSchema = z.object({
 
 router.post('/checkin', authenticate, validateBody(checkInSchema), async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    if (req.user?.role !== 'CITIZEN' && req.user?.role !== 'RECEPTION') {
+    if (req.user?.role !== 'CITIZEN' && req.user?.role !== 'RECEPTION_STAFF') {
       return res.status(403).json({ success: false, message: 'Unauthorized to perform check-in' });
     }
     const { appointmentNumber, qrCode } = req.body;
 
     let appointment;
-    if (req.user?.role === 'RECEPTION') {
+    if (req.user?.role === 'RECEPTION_STAFF') {
       appointment = await Appointment.findOne({ appointmentNumber });
     } else {
       appointment = await Appointment.findOne({ appointmentNumber, qrCode });

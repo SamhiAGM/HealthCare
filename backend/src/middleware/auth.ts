@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User, UserRole } from '../models/User';
+import { Role, IRole } from '../models/Role';
 
 export interface AuthRequest extends Request {
   user?: {
@@ -69,6 +70,50 @@ export function requireRole(...roles: UserRole[]) {
       return;
     }
     next();
+  };
+}
+
+// In-memory cache for roles to avoid DB lookup on every request
+let roleCache: Record<string, IRole> = {};
+let lastCacheUpdate = 0;
+const CACHE_TTL = 1000 * 60 * 5; // 5 minutes
+
+async function getRolePermissions(roleName: string): Promise<string[]> {
+  const now = Date.now();
+  if (!roleCache[roleName] || now - lastCacheUpdate > CACHE_TTL) {
+    const roles = await Role.find({});
+    roleCache = roles.reduce((acc, role) => {
+      acc[role.name] = role;
+      return acc;
+    }, {} as Record<string, IRole>);
+    lastCacheUpdate = now;
+  }
+  return roleCache[roleName]?.permissions || [];
+}
+
+/** Granular permission-based access control guard */
+export function requirePermission(permission: string) {
+  return async (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+    
+    // Super admins always have access
+    if (req.user.role === 'SUPER_ADMIN') {
+      return next();
+    }
+
+    try {
+      const permissions = await getRolePermissions(req.user.role);
+      if (!permissions.includes(permission)) {
+        res.status(403).json({ error: `Missing required permission: ${permission}` });
+        return;
+      }
+      next();
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error verifying permissions' });
+    }
   };
 }
 

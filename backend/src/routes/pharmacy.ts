@@ -54,6 +54,20 @@ router.post('/prescriptions/:id/dispense', authenticate, requirePharmacist, vali
       return res.status(400).json({ success: false, message: 'Already dispensed' });
     }
 
+    // Deduct stock
+    for (const item of prescription.items) {
+      const inventory = await MedicineInventory.findOne({
+        hospitalId: prescription.hospitalId,
+        medicineName: item.medicineName
+      });
+      if (inventory) {
+        inventory.stockLevel = Math.max(0, inventory.stockLevel - item.quantity);
+        if (inventory.stockLevel === 0) inventory.availability = 'out-of-stock';
+        else if (inventory.stockLevel < 100) inventory.availability = 'low-stock';
+        await inventory.save();
+      }
+    }
+
     prescription.dispenseStatus = 'Dispensed';
     prescription.status = 'Completed'; // Optionally complete the prescription
     await prescription.save();

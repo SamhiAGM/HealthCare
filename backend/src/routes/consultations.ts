@@ -106,7 +106,7 @@ router.patch('/:id/complete', authenticate, requireClinicalStaff, validateBody(c
       doctorId: consultation.doctorId,
       appointmentId: consultation.appointmentId,
       diagnosis: diagnosis || 'Pending Diagnosis',
-      symptoms: presentingComplaint ? presentingComplaint.split(',').map(s => s.trim()) : [],
+      symptoms: presentingComplaint ? presentingComplaint.split(',').map((s: string) => s.trim()) : [],
       clinicalNotes: clinicalNotes || '',
       treatmentPlan: plan || '',
       recordDate: new Date(),

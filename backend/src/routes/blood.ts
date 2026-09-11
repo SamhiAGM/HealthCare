@@ -1,25 +1,24 @@
-import express from 'express';
+import express, { Response } from 'express';
 import { BloodInventory } from '../models/BloodInventory';
-import { authenticate, AuthRequest } from '../middleware/auth';
-import { Response } from 'express';
+import { authenticate, AuthRequest, requirePermission, requireHospitalScope } from '../middleware/auth';
 import { validateBody } from '../middleware/validate';
 import { z } from 'zod';
 import { Types } from 'mongoose';
 
 const router = express.Router();
 
-// GET /api/v1/blood - Public route to check blood availability
-router.get('/', async (req, res) => {
+// GET /api/v1/blood - Check blood availability
+router.get('/', authenticate, async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    const { hospitalId, bloodGroup, status } = req.query;
+    const hospitalId = req.user?.hospitalId || req.query.hospitalId;
     const filter: any = {};
     
     if (hospitalId) filter.hospitalId = hospitalId;
-    if (bloodGroup) filter.bloodGroup = bloodGroup;
-    if (status) filter.status = status;
+    if (req.query.bloodGroup) filter.bloodGroup = req.query.bloodGroup;
+    if (req.query.status) filter.status = req.query.status;
 
     const inventory = await BloodInventory.find(filter)
-      .populate('hospitalId', 'name district')
+      .populate('hospitalId', 'officialName district')
       .sort({ bloodGroup: 1 });
 
     res.json({ success: true, count: inventory.length, data: inventory });
@@ -30,23 +29,24 @@ router.get('/', async (req, res) => {
 
 // POST /api/v1/blood - Update blood stock (Hospital Staff only)
 const updateBloodSchema = z.object({
-  hospitalId: z.string().refine(val => Types.ObjectId.isValid(val), 'Invalid hospital ID'),
   bloodGroup: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
-  unitsAvailable: z.number().int().min(0),
+  units: z.number().int().min(0),
 });
 
-router.post('/', authenticate, validateBody(updateBloodSchema), async (req: AuthRequest, res: Response): Promise<any> => {
+router.post('/', authenticate, requirePermission('inventory.manage'), requireHospitalScope, validateBody(updateBloodSchema), async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    const { hospitalId, bloodGroup, unitsAvailable } = req.body;
+    const { bloodGroup, units } = req.body;
+    const hospitalId = req.user?.hospitalId;
     
-    let status = 'Adequate';
-    if (unitsAvailable === 0) status = 'Critical';
-    else if (unitsAvailable < 10) status = 'Low';
+    let status = 'adequate';
+    if (units === 0) status = 'critical';
+    else if (units < 10) status = 'low';
+    else if (units < 30) status = 'moderate';
 
     let item = await BloodInventory.findOne({ hospitalId, bloodGroup });
     
     if (item) {
-      item.units = unitsAvailable;
+      item.units = units;
       item.status = status as any;
       item.lastUpdatedAt = new Date();
       await item.save();
@@ -54,7 +54,7 @@ router.post('/', authenticate, validateBody(updateBloodSchema), async (req: Auth
       item = new BloodInventory({
         hospitalId,
         bloodGroup,
-        units: unitsAvailable,
+        units,
         status,
         lastUpdatedAt: new Date()
       });

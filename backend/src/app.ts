@@ -16,6 +16,7 @@ import bloodRoutes from './routes/blood';
 import bedRoutes from './routes/beds';
 import citizenRoutes from './routes/citizen';
 import adminRoutes from './routes/admin';
+import superAdminRoutes from './routes/super-admin';
 import { globalErrorHandler } from './middleware/validate';
 
 const app = express();
@@ -76,6 +77,7 @@ app.use('/api/v1/blood', bloodRoutes);
 app.use('/api/v1/beds', bedRoutes);
 app.use('/api/v1/citizen', citizenRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/super-admin', superAdminRoutes);
 
 app.use(globalErrorHandler);
 

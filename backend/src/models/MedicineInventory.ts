@@ -6,6 +6,7 @@ export interface IMedicineInventory extends Document {
   genericName?: string;
   strength?: string;
   form?: string;       // 'Tablet', 'Capsule', 'Syrup', etc.
+  stockLevel: number;
   availability: 'available' | 'limited' | 'low-stock' | 'out-of-stock' | 'unknown';
   lastUpdatedBy?: mongoose.Types.ObjectId;
   lastUpdatedAt: Date;
@@ -19,6 +20,7 @@ const medicineInventorySchema = new Schema<IMedicineInventory>({
   genericName:     { type: String },
   strength:        { type: String },
   form:            { type: String },
+  stockLevel:      { type: Number, default: 0 },
   availability: {
     type: String,
     enum: ['available', 'limited', 'low-stock', 'out-of-stock', 'unknown'],

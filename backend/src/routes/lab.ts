@@ -1,34 +1,23 @@
 import express, { Response } from 'express';
 import { LabResult } from '../models/LabResult';
-import { authenticate, AuthRequest } from '../middleware/auth';
+import { authenticate, AuthRequest, requirePermission, requireHospitalScope } from '../middleware/auth';
 import { validateBody } from '../middleware/validate';
 import { z } from 'zod';
-import { eventBus, EVENTS } from '../events/eventBus';
+import { Types } from 'mongoose';
 
 const router = express.Router();
 
-// Middleware
-const requireClinical = (req: AuthRequest, res: Response, next: any) => {
-  if (!['DOCTOR', 'NURSE'].includes(req.user?.role || '')) return res.status(403).json({ success: false, message: 'Clinical access required' });
-  next();
-};
-
-const requireLabTech = (req: AuthRequest, res: Response, next: any) => {
-  if (req.user?.role !== 'LAB_TECH') return res.status(403).json({ success: false, message: 'Lab access required' });
-  next();
-};
-
 // 1. Doctor requests a lab test
 const requestSchema = z.object({
-  citizenId: z.string(),
-  hospitalId: z.string(),
+  citizenId: z.string().refine(val => Types.ObjectId.isValid(val), 'Invalid citizen ID'),
   testName: z.string(),
   category: z.enum(['Blood', 'Urine', 'Imaging', 'Biopsy', 'Other'])
 });
 
-router.post('/request', authenticate, requireClinical, validateBody(requestSchema), async (req: AuthRequest, res: Response): Promise<any> => {
+router.post('/request', authenticate, requirePermission('clinical.manage'), requireHospitalScope, validateBody(requestSchema), async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    const { citizenId, hospitalId, testName, category } = req.body;
+    const { citizenId, testName, category } = req.body;
+    const hospitalId = req.user?.hospitalId;
 
     const labTest = new LabResult({
       citizenId,
@@ -43,35 +32,29 @@ router.post('/request', authenticate, requireClinical, validateBody(requestSchem
 
     await labTest.save();
 
-    eventBus.emit(EVENTS.LAB_TEST_REQUESTED, {
-      labTestId: labTest._id,
-      hospitalId,
-      testName,
-      category
-    });
-
     res.status(201).json({ success: true, data: labTest });
   } catch (error) {
-    console.error('Request lab error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
 
 // 2. Lab Tech gets pending tests for hospital
-router.get('/hospital/:hospitalId/pending', authenticate, requireLabTech, async (req: AuthRequest, res: Response): Promise<any> => {
+router.get('/', authenticate, requirePermission('lab.manage'), requireHospitalScope, async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    const { hospitalId } = req.params;
+    const hospitalId = req.user?.hospitalId;
+    const { status, category } = req.query;
     
-    const pending = await LabResult.find({ 
-      hospitalId, 
-      status: 'Pending'
-    }).populate('citizenId', 'firstName lastName nic')
-      .populate('doctorId', 'firstName lastName')
+    const filter: any = { hospitalId };
+    if (status) filter.status = status;
+    if (category) filter.category = category;
+
+    const pending = await LabResult.find(filter)
+      .populate('citizenId', 'name nic')
+      .populate('doctorId', 'name title')
       .sort({ dateOrdered: 1 });
 
-    res.json({ success: true, data: pending });
+    res.json({ success: true, count: pending.length, data: pending });
   } catch (error) {
-    console.error('Fetch pending lab error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
@@ -82,11 +65,12 @@ const completeSchema = z.object({
   interpretation: z.enum(['Normal', 'Abnormal', 'Critical'])
 });
 
-router.post('/tests/:id/complete', authenticate, requireLabTech, validateBody(completeSchema), async (req: AuthRequest, res: Response): Promise<any> => {
+router.post('/:id/complete', authenticate, requirePermission('lab.manage'), requireHospitalScope, validateBody(completeSchema), async (req: AuthRequest, res: Response): Promise<any> => {
   try {
+    const hospitalId = req.user?.hospitalId;
     const { resultSummary, interpretation } = req.body;
     
-    const labTest = await LabResult.findById(req.params.id);
+    const labTest = await LabResult.findOne({ _id: req.params.id, hospitalId });
     if (!labTest) return res.status(404).json({ success: false, message: 'Lab test not found' });
 
     labTest.status = 'Completed';
@@ -96,16 +80,8 @@ router.post('/tests/:id/complete', authenticate, requireLabTech, validateBody(co
 
     await labTest.save();
 
-    eventBus.emit(EVENTS.LAB_RESULT_COMPLETED, {
-      labTestId: labTest._id,
-      hospitalId: labTest.hospitalId,
-      testName: labTest.testName,
-      interpretation
-    });
-
     res.json({ success: true, data: labTest });
   } catch (error) {
-    console.error('Complete lab error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });

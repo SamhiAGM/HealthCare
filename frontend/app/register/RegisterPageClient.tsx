@@ -19,7 +19,7 @@ const step1Schema = z.object({
   firstName:   z.string().min(2, 'Minimum 2 characters').max(60, 'Maximum 60 characters').trim(),
   lastName:    z.string().min(2, 'Minimum 2 characters').max(60, 'Maximum 60 characters').trim(),
   dateOfBirth: z.string().min(1, 'Date of birth is required'),
-  gender:      z.enum(['Male', 'Female', 'Other'], { errorMap: () => ({ message: 'Please select your gender' }) }),
+  gender:      z.enum(['Male', 'Female', 'Other'], { message: 'Please select your gender' }),
 });
 
 const step2Schema = z.object({
