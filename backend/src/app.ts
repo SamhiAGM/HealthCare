@@ -31,10 +31,14 @@ app.use(helmet({
 app.use(cors({
   origin: (origin, cb) => {
     const allowed = [
-      process.env.FRONTEND_URL || 'http://localhost:3000',
+      process.env.FRONTEND_URL,
+      'http://localhost:3000',
       'http://localhost:3001',
-    ];
-    if (!origin || allowed.includes(origin)) return cb(null, true);
+    ].filter(Boolean);
+    
+    if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app')) {
+      return cb(null, true);
+    }
     return cb(new Error('Not allowed by CORS'));
   },
   credentials: true,
