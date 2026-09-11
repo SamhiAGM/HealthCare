@@ -22,7 +22,7 @@ export default function DepartmentsPage() {
   const [formData, setFormData] = useState({ name: '', description: '' });
 
   const fetchDepartments = async (): Promise<Department[]> => {
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
     const res = await fetch(`${API}/api/v1/hospital-admin/departments`, { credentials: 'include' });
     if (!res.ok) throw new Error('Failed to fetch departments');
     const data = await res.json();
@@ -36,7 +36,7 @@ export default function DepartmentsPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: { name: string; description: string }) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/departments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

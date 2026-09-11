@@ -34,7 +34,7 @@ function BookAppointmentForm() {
   const [booking, setBooking] = useState(false);
   const [successId, setSuccessId] = useState('');
 
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
 
   // Fetch Hospitals
   useEffect(() => {

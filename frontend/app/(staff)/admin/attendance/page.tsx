@@ -17,7 +17,7 @@ export default function AttendancePage() {
   const { data: staffList = [] } = useQuery({
     queryKey: ['admin-staff'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/staff`, { credentials: 'include' });
       const data = await res.json();
       return data.data || [];
@@ -28,7 +28,7 @@ export default function AttendancePage() {
   const { data: shifts = [] } = useQuery({
     queryKey: ['admin-shifts'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/shifts`, { credentials: 'include' });
       const data = await res.json();
       return data.data || [];
@@ -39,7 +39,7 @@ export default function AttendancePage() {
   const { data: attendanceRecords = [], isLoading } = useQuery({
     queryKey: ['admin-attendance', selectedDate],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/attendance?date=${selectedDate}`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch attendance');
       const data = await res.json();
@@ -49,7 +49,7 @@ export default function AttendancePage() {
 
   const markAttendanceMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/attendance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

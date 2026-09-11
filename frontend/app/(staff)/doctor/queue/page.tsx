@@ -13,7 +13,7 @@ export default function DoctorQueue() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
   const hospitalId = 'mock-hospital-id'; // In real app, from auth context
   const departmentId = 'mock-dept-id';
 

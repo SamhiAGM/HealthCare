@@ -14,7 +14,7 @@ export default function DispensaryPage() {
     queryKey: ['hospital-id'],
     queryFn: async () => {
       // In a real app we'd get this from user profile context. Using a fixed local approach or query string for demo.
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/auth/me`, { credentials: 'include' });
       const data = await res.json();
       return data.user?.hospitalId;
@@ -25,7 +25,7 @@ export default function DispensaryPage() {
     queryKey: ['admin-dispensary', hospitalId],
     queryFn: async () => {
       if (!hospitalId) return [];
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/pharmacy/hospital/${hospitalId}/pending`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch pending prescriptions');
       const data = await res.json();
@@ -37,7 +37,7 @@ export default function DispensaryPage() {
 
   const dispenseMutation = useMutation({
     mutationFn: async (id: string) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/pharmacy/prescriptions/${id}/dispense`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

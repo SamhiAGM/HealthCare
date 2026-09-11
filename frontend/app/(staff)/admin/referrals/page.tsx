@@ -20,7 +20,7 @@ export default function ReferralsPage() {
   const { data: referrals = [], isLoading } = useQuery({
     queryKey: ['admin-referrals', direction],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const url = new URL(`${API}/api/v1/referrals`);
       if (direction) url.searchParams.append('direction', direction);
       const res = await fetch(url.toString(), { credentials: 'include' });
@@ -32,7 +32,7 @@ export default function ReferralsPage() {
   const { data: hospitals = [] } = useQuery({
     queryKey: ['hospitals-list'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospitals`, { credentials: 'include' });
       return (await res.json()).data || [];
     }
@@ -40,7 +40,7 @@ export default function ReferralsPage() {
 
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/referrals`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data) });
       if (!res.ok) throw new Error((await res.json()).message);
       return res.json();
@@ -51,7 +51,7 @@ export default function ReferralsPage() {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string, status: string }) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/referrals/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ status }) });
       if (!res.ok) throw new Error((await res.json()).message);
       return res.json();

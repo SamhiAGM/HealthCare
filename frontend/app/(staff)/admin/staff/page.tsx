@@ -21,7 +21,7 @@ export default function StaffPage() {
   });
 
   const fetchStaff = async () => {
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
     const res = await fetch(`${API}/api/v1/hospital-admin/staff`, { credentials: 'include' });
     if (!res.ok) throw new Error('Failed to fetch staff');
     const data = await res.json();
@@ -35,7 +35,7 @@ export default function StaffPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/staff`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

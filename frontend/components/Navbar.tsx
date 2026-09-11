@@ -46,7 +46,7 @@ export function Navbar() {
   const langRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
     fetch(`${API}/api/v1/auth/me`, { credentials: 'include' })
       .then(res => setIsAuthenticated(res.ok))
       .catch(() => setIsAuthenticated(false));

@@ -45,7 +45,7 @@ export default function ConsultationPage() {
 
   const handleCreatePrescription = async () => {
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       // MOCK IDs for demo, should come from consultation data
       const citizenId = '6aa1c313adf98a660362719b'; 
       const hospitalId = '65d1c313adf98a660362719a';
@@ -82,7 +82,7 @@ export default function ConsultationPage() {
 
   const handleRequestLabTest = async () => {
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const citizenId = '6aa1c313adf98a660362719b'; 
       const hospitalId = '65d1c313adf98a660362719a';
 
@@ -112,7 +112,7 @@ export default function ConsultationPage() {
   const handleStartConsultation = async () => {
     // Call /api/v1/consultations/start
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       await fetch(`${API}/api/v1/consultations/start`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -128,7 +128,7 @@ export default function ConsultationPage() {
   const handleComplete = async () => {
     setLoading(true);
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       // Assume we stored consultation ID when we started it. For demo, we just use a generic ID pattern
       // In full app, we need the consultation ID from the start API response
       // For now we'll simulate completion

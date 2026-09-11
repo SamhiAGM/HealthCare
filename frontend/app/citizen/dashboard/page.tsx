@@ -29,7 +29,7 @@ export default function CitizenDashboardPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
 
   useEffect(() => {
     const fetchDashboard = async () => {

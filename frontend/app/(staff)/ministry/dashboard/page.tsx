@@ -15,7 +15,7 @@ export default function MinistryDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
 
     // Fetch initial stats
     fetch(`${API}/api/v1/ministry/stats`, { credentials: 'include' })

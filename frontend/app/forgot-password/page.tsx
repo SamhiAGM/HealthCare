@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
   const [userId, setUserId]   = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });

@@ -20,7 +20,7 @@ export default function ClinicsPage() {
   const { data: departments = [] } = useQuery({
     queryKey: ['admin-departments'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/departments`, { credentials: 'include' });
       const data = await res.json();
       return data.data || [];
@@ -30,7 +30,7 @@ export default function ClinicsPage() {
   const { data: doctors = [] } = useQuery({
     queryKey: ['admin-doctors'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/doctors`, { credentials: 'include' });
       const data = await res.json();
       return data.data || [];
@@ -40,7 +40,7 @@ export default function ClinicsPage() {
   const { data: clinics = [], isLoading } = useQuery({
     queryKey: ['admin-clinics'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/clinics`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch clinics');
       const data = await res.json();
@@ -50,7 +50,7 @@ export default function ClinicsPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/clinics`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -76,7 +76,7 @@ export default function ClinicsPage() {
 
   const cancelMutation = useMutation({
     mutationFn: async (payload: { id: string, reason: string }) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/clinics/${payload.id}/cancel`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

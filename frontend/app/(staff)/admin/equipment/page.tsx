@@ -18,7 +18,7 @@ export default function EquipmentPage() {
   const { data: departments = [] } = useQuery({
     queryKey: ['admin-departments'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/departments`, { credentials: 'include' });
       const data = await res.json();
       return data.data || [];
@@ -28,7 +28,7 @@ export default function EquipmentPage() {
   const { data: equipmentList = [], isLoading } = useQuery({
     queryKey: ['admin-equipment'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/equipment`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch equipment');
       const data = await res.json();
@@ -38,7 +38,7 @@ export default function EquipmentPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/equipment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

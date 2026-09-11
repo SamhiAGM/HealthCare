@@ -20,7 +20,7 @@ export default function WardsPage() {
   const { data: wards = [] } = useQuery({
     queryKey: ['admin-beds'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/beds`, { credentials: 'include' });
       const data = await res.json();
       return data.data || [];
@@ -30,7 +30,7 @@ export default function WardsPage() {
   const { data: doctors = [] } = useQuery({
     queryKey: ['admin-doctors'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/doctors`, { credentials: 'include' });
       const data = await res.json();
       return data.data || [];
@@ -40,7 +40,7 @@ export default function WardsPage() {
   const { data: admissions = [], isLoading } = useQuery({
     queryKey: ['admin-admissions'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/admissions?status=Admitted`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch admissions');
       const data = await res.json();
@@ -50,7 +50,7 @@ export default function WardsPage() {
 
   const admitMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/admissions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -77,7 +77,7 @@ export default function WardsPage() {
 
   const dischargeMutation = useMutation({
     mutationFn: async (payload: { id: string, status: string, notes: string }) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/admissions/${payload.id}/discharge`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

@@ -15,7 +15,7 @@ export default function LabDashboard() {
   useEffect(() => {
     // MOCK hospitalId for demo
     const hospitalId = 'mock-hospital-id';
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
 
     const fetchPending = () => {
       fetch(`${API}/api/v1/lab/hospital/${hospitalId}/pending`, { credentials: 'include' })
@@ -72,7 +72,7 @@ export default function LabDashboard() {
 
   const handleComplete = async (testId: string) => {
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const resultData = results[testId];
 
       if (!resultData.summary) {

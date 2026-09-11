@@ -13,7 +13,7 @@ export default function QueuesPage() {
   const { data: departments = [] } = useQuery({
     queryKey: ['admin-departments'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/departments`, { credentials: 'include' });
       const data = await res.json();
       return data.data || [];
@@ -23,7 +23,7 @@ export default function QueuesPage() {
   const { data: queues = [], isLoading } = useQuery({
     queryKey: ['admin-queues', selectedDepartment],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const url = new URL(`${API}/api/v1/queues`);
       if (selectedDepartment) url.searchParams.append('departmentId', selectedDepartment);
       
@@ -37,7 +37,7 @@ export default function QueuesPage() {
 
   const generateTokenMutation = useMutation({
     mutationFn: async (departmentId: string) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/queues/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -61,7 +61,7 @@ export default function QueuesPage() {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string, status: string }) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/queues/${id}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

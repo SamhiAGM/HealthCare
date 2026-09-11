@@ -21,7 +21,7 @@ export default function DoctorsPage() {
   const { data: departments = [] } = useQuery({
     queryKey: ['admin-departments'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/hospital-admin/departments`, { credentials: 'include' });
       const data = await res.json();
       return data.data || [];
@@ -31,7 +31,7 @@ export default function DoctorsPage() {
   const { data: doctors = [], isLoading } = useQuery({
     queryKey: ['admin-doctors'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/doctors`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch doctors');
       const data = await res.json();
@@ -41,7 +41,7 @@ export default function DoctorsPage() {
 
   const createMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/doctors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

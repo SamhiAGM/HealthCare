@@ -50,7 +50,7 @@ export default function HospitalDetailPage({ params }: { params: Promise<{ slug:
   const [error, setError]   = useState('');
   const [activeTab, setActiveTab] = useState<'overview' | 'clinics' | 'beds' | 'blood' | 'medicines' | 'staff'>('overview');
 
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
 
   useEffect(() => {
     const fetchHospital = async () => {

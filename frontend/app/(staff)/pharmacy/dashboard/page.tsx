@@ -13,7 +13,7 @@ export default function PharmacyDashboard() {
   useEffect(() => {
     // In a real app, we fetch the hospitalId from the logged-in user's session
     const hospitalId = 'mock-hospital-id';
-    const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
 
     // Fetch initial pending prescriptions
     // Using a mocked generic hospital ID for now, since we haven't wired full auth
@@ -60,7 +60,7 @@ export default function PharmacyDashboard() {
 
   const handleDispense = async (id: string) => {
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/pharmacy/prescriptions/${id}/dispense`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -80,7 +80,7 @@ export default function RegisterPageClient() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedProvince, setSelectedProvince] = useState('');
 
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
 
   /* ── Step 1 form ─────────────────────────────────────────────────── */
   const form1 = useForm<Step1Data>({ resolver: zodResolver(step1Schema), defaultValues: formData.step1 });

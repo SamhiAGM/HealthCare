@@ -9,7 +9,7 @@ export default function EmergencyPage() {
   const { data: beds = [] } = useQuery({
     queryKey: ['emergency-beds'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/beds`, { credentials: 'include' });
       return (await res.json()).data || [];
     },
@@ -19,7 +19,7 @@ export default function EmergencyPage() {
   const { data: blood = [] } = useQuery({
     queryKey: ['emergency-blood'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/blood`, { credentials: 'include' });
       return (await res.json()).data || [];
     },

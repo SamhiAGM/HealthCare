@@ -21,7 +21,7 @@ export default function PharmacyPage() {
   const { data: inventory = [], isLoading } = useQuery({
     queryKey: ['admin-pharmacy'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/medicines`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch medicine inventory');
       const data = await res.json();
@@ -31,7 +31,7 @@ export default function PharmacyPage() {
 
   const updateMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/medicines`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

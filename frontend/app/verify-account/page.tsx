@@ -18,7 +18,7 @@ function VerifyAccountForm() {
   const [state, setState] = useState<'idle' | 'loading' | 'success' | 'error' | 'resending' | 'resent'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;

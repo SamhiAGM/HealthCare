@@ -21,7 +21,7 @@ export default function ReceptionDashboard() {
     setTokenDetails(null);
 
     try {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/queue/checkin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

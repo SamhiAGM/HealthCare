@@ -11,7 +11,7 @@ export default function AuditPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['admin-audit', searchAction, successFilter, page],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const url = new URL(`${API}/api/v1/audit`);
       url.searchParams.append('page', page.toString());
       url.searchParams.append('limit', '25');

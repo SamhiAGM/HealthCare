@@ -13,7 +13,7 @@ export default function RadiologyPage() {
   const { data: tests = [], isLoading } = useQuery({
     queryKey: ['admin-radiology'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/lab?category=Imaging`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed');
       return (await res.json()).data;
@@ -23,7 +23,7 @@ export default function RadiologyPage() {
 
   const completeMutation = useMutation({
     mutationFn: async (payload: { id: string, data: any }) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/lab/${payload.id}/complete`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
         body: JSON.stringify(payload.data),

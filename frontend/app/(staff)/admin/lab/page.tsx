@@ -18,7 +18,7 @@ export default function LabPage() {
   const { data: tests = [], isLoading } = useQuery({
     queryKey: ['admin-lab-tests'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/lab`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch lab tests');
       const data = await res.json();
@@ -29,7 +29,7 @@ export default function LabPage() {
 
   const completeMutation = useMutation({
     mutationFn: async (payload: { id: string, data: any }) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/lab/${payload.id}/complete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

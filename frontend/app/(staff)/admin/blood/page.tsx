@@ -18,7 +18,7 @@ export default function BloodBankPage() {
   const { data: inventory = [], isLoading } = useQuery({
     queryKey: ['admin-blood'],
     queryFn: async () => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/blood`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch blood inventory');
       const data = await res.json();
@@ -28,7 +28,7 @@ export default function BloodBankPage() {
 
   const updateMutation = useMutation({
     mutationFn: async (payload: any) => {
-      const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
       const res = await fetch(`${API}/api/v1/blood`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
