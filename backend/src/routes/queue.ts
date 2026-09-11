@@ -5,13 +5,12 @@ import { authenticate, AuthRequest } from '../middleware/auth';
 import { Response } from 'express';
 import { validateBody } from '../middleware/validate';
 import { z } from 'zod';
-import { Types } from 'mongoose';
 import { eventBus, EVENTS } from '../events/eventBus';
+import { Types } from 'mongoose';
 
 const router = express.Router();
 
 // GET /api/v1/queue/live/:hospitalId/:departmentId
-// Publicly accessible to view live queue status (for the tracker)
 router.get(['/live/:hospitalId', '/live/:hospitalId/:departmentId'], async (req, res) => {
   try {
     const { hospitalId } = req.params;
@@ -23,22 +22,21 @@ router.get(['/live/:hospitalId', '/live/:hospitalId/:departmentId'], async (req,
         $lt: new Date(new Date().setHours(23,59,59,999)) 
       } 
     };
-    
     if (departmentId) filter.departmentId = departmentId;
 
-    // Get tokens that are currently active or completed today
     const tokens = await QueueToken.find(filter).sort({ displayOrder: 1 });
-
-    const currentlyServing = tokens.find(t => t.status === 'In-Consultation' || t.status === 'Called');
-    const waitingList = tokens.filter(t => t.status === 'Waiting');
+    
+    // Convert old statuses if they exist in legacy data to new strict ones
+    const activeTokens = tokens.filter(t => ['Waiting', 'WAITING', 'Called', 'CALLED', 'In-Consultation', 'IN_CONSULTATION', 'RECALLED', 'TEMPORARILY_SKIPPED'].includes(t.status));
+    const waitingList = tokens.filter(t => t.status === 'Waiting' || t.status === 'WAITING' || t.status === 'TEMPORARILY_SKIPPED');
 
     res.json({ 
       success: true, 
       data: {
-        totalTokens: tokens.length,
-        currentlyServing: currentlyServing ? currentlyServing.tokenNumber : null,
+        totalTokens: activeTokens.length,
         waitingCount: waitingList.length,
-        estimatedWaitTime: waitingList.length * 5 // Rough estimate 5 mins per patient
+        estimatedWaitTime: waitingList.length * 5,
+        tokens: activeTokens
       }
     });
   } catch (error) {
@@ -46,42 +44,27 @@ router.get(['/live/:hospitalId', '/live/:hospitalId/:departmentId'], async (req,
   }
 });
 
-// POST /api/v1/queue/checkin - Citizen scans QR to check-in
+// POST /api/v1/queue/checkin
 const checkInSchema = z.object({
   appointmentNumber: z.string(),
-  qrCode: z.string()
+  qrCode: z.string().optional()
 });
 
 router.post('/checkin', authenticate, validateBody(checkInSchema), async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    if (req.user?.role !== 'CITIZEN' && req.user?.role !== 'RECEPTION_STAFF') {
-      return res.status(403).json({ success: false, message: 'Unauthorized to perform check-in' });
-    }
-    const { appointmentNumber, qrCode } = req.body;
-
-    let appointment;
-    if (req.user?.role === 'RECEPTION_STAFF') {
-      appointment = await Appointment.findOne({ appointmentNumber });
-    } else {
-      appointment = await Appointment.findOne({ appointmentNumber, qrCode });
+    if (!['CITIZEN', 'RECEPTION_STAFF'].includes(req.user?.role || '')) {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
     }
     
-    if (!appointment) {
-      return res.status(404).json({ success: false, message: 'Invalid appointment details' });
-    }
+    const { appointmentNumber } = req.body;
+    const appointment = await Appointment.findOne({ appointmentNumber });
+    
+    if (!appointment) return res.status(404).json({ success: false, message: 'Invalid appointment' });
 
-    if (appointment.status !== 'Confirmed') {
-      return res.status(400).json({ success: false, message: `Appointment is ${appointment.status}` });
-    }
-
-    // Check if token already exists for today
     const startOfDay = new Date(new Date().setHours(0,0,0,0));
     const existingToken = await QueueToken.findOne({ appointmentId: appointment._id, date: { $gte: startOfDay } });
-    if (existingToken) {
-      return res.status(400).json({ success: false, message: 'Already checked in', data: existingToken });
-    }
+    if (existingToken) return res.status(400).json({ success: false, message: 'Already checked in' });
 
-    // Generate queue token number
     const countToday = await QueueToken.countDocuments({ 
       hospitalId: appointment.hospitalId,
       departmentId: appointment.departmentId,
@@ -100,76 +83,133 @@ router.post('/checkin', authenticate, validateBody(checkInSchema), async (req: A
       tokenNumber,
       displayOrder,
       date: new Date(),
-      status: 'Waiting',
+      status: 'WAITING',
       checkedInAt: new Date()
     });
 
     await token.save();
     
-    // Update appointment status
     appointment.status = 'Arrived';
     await appointment.save();
 
-    eventBus.emit(EVENTS.PATIENT_CHECKED_IN, {
-      appointmentId: appointment._id,
-      hospitalId: appointment.hospitalId,
-      clinicId: appointment.clinicId,
-      queueTokenId: token._id,
-      tokenNumber: tokenNumber
-    });
-
+    eventBus.emit(EVENTS.PATIENT_CHECKED_IN, { token });
     res.status(201).json({ success: true, data: token });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error checking in' });
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 });
 
-// POST /api/v1/queue/:id/advance - Admin calls next patient
-const advanceSchema = z.object({
-  action: z.enum(['Call', 'Start-Consultation', 'Complete', 'No-Show'])
+// POST /api/v1/queue/call-next
+// ATOMIC Call Next Patient
+const callNextSchema = z.object({
+  clinicId: z.string().optional(),
+  departmentId: z.string()
 });
 
-router.post('/:id/advance', authenticate, validateBody(advanceSchema), async (req: AuthRequest, res: Response): Promise<any> => {
+router.post('/call-next', authenticate, validateBody(callNextSchema), async (req: AuthRequest, res: Response): Promise<any> => {
   try {
-    // Check if user is hospital staff...
-    if (req.user?.role === 'CITIZEN') {
-      return res.status(403).json({ success: false, message: 'Unauthorized' });
+    if (req.user?.role !== 'DOCTOR') return res.status(403).json({ success: false, message: 'Unauthorized' });
+
+    const { departmentId } = req.body;
+    const startOfDay = new Date(new Date().setHours(0,0,0,0));
+
+    // ATOMIC LOCK: Find the first WAITING patient and set them to CALLED in one database operation
+    const nextPatient = await QueueToken.findOneAndUpdate(
+      { 
+        departmentId, 
+        date: { $gte: startOfDay }, 
+        status: { $in: ['WAITING', 'Waiting'] } 
+      },
+      { 
+        $set: { 
+          status: 'CALLED', 
+          calledAt: new Date(),
+          doctorId: req.user.id
+        } 
+      },
+      { sort: { displayOrder: 1 }, new: true } // Return the updated document
+    );
+
+    if (!nextPatient) {
+      return res.status(404).json({ success: false, message: 'No eligible patients waiting in queue' });
     }
 
-    const token = await QueueToken.findById(req.params.id);
-    if (!token) return res.status(404).json({ success: false, message: 'Token not found' });
-
-    const { action } = req.body;
-
-    switch (action) {
-      case 'Call':
-        token.status = 'Called';
-        token.calledAt = new Date();
-        break;
-      case 'Start-Consultation':
-        token.status = 'In-Consultation';
-        token.consultationStartAt = new Date();
-        break;
-      case 'Complete':
-        token.status = 'Completed';
-        token.completedAt = new Date();
-        if (token.appointmentId) {
-          await Appointment.findByIdAndUpdate(token.appointmentId, { status: 'Completed' });
-        }
-        break;
-      case 'No-Show':
-        token.status = 'Missed';
-        if (token.appointmentId) {
-          await Appointment.findByIdAndUpdate(token.appointmentId, { status: 'NoShow' });
-        }
-        break;
-    }
-
-    await token.save();
-    res.json({ success: true, data: token });
-
+    eventBus.emit('QUEUE_TOKEN_CALLED', { token: nextPatient, doctorId: req.user.id });
+    res.json({ success: true, data: nextPatient });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error advancing queue' });
+    res.status(500).json({ success: false, message: 'Server error calling next patient' });
+  }
+});
+
+// POST /api/v1/queue/:id/recall
+router.post('/:id/recall', authenticate, async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const token = await QueueToken.findOneAndUpdate(
+      { _id: req.params.id, status: 'CALLED' },
+      { $inc: { recallCount: 1 } },
+      { new: true }
+    );
+    if (!token) return res.status(404).json({ success: false, message: 'Token not found or not in CALLED state' });
+    
+    eventBus.emit('QUEUE_TOKEN_RECALLED', { token });
+    res.json({ success: true, data: token });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// POST /api/v1/queue/:id/no-response
+router.post('/:id/no-response', authenticate, async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const token = await QueueToken.findOneAndUpdate(
+      { _id: req.params.id, status: 'CALLED' },
+      { $set: { status: 'NO_RESPONSE' } },
+      { new: true }
+    );
+    if (!token) return res.status(404).json({ success: false, message: 'Token not found or not CALLED' });
+    
+    eventBus.emit('QUEUE_TOKEN_NO_RESPONSE', { token });
+    res.json({ success: true, data: token });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// POST /api/v1/queue/:id/skip
+router.post('/:id/skip', authenticate, async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const token = await QueueToken.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: { status: 'TEMPORARILY_SKIPPED' } },
+      { new: true }
+    );
+    if (!token) return res.status(404).json({ success: false, message: 'Token not found' });
+    
+    eventBus.emit('QUEUE_TOKEN_SKIPPED', { token });
+    res.json({ success: true, data: token });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// POST /api/v1/queue/:id/complete
+router.post('/:id/complete', authenticate, async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const token = await QueueToken.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: { status: 'COMPLETED', completedAt: new Date() } },
+      { new: true }
+    );
+    if (!token) return res.status(404).json({ success: false, message: 'Token not found' });
+    
+    if (token.appointmentId) {
+      await Appointment.findByIdAndUpdate(token.appointmentId, { status: 'Completed' });
+    }
+    
+    eventBus.emit('QUEUE_TOKEN_COMPLETED', { token });
+    res.json({ success: true, data: token });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 });
 
