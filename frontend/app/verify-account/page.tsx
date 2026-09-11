@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -9,7 +9,7 @@ import { Logo } from '@/components/Logo';
 import { Button } from '@/components/Button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
-export default function VerifyAccountPage() {
+function VerifyAccountForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const userId = searchParams.get('userId') || '';
@@ -223,3 +223,12 @@ export default function VerifyAccountPage() {
     </div>
   );
 }
+
+export default function VerifyAccountPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>}>
+      <VerifyAccountForm />
+    </Suspense>
+  );
+}
+

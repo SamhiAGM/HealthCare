@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/Skeleton';
 interface Hospital { _id: string; officialName: string; district: string; province: string; slug: string }
 interface Clinic { _id: string; name: string; day: string; startTime: string; endTime: string; capacity: number }
 
-export default function BookAppointmentPage() {
+function BookAppointmentForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preselectedHospital = searchParams.get('hospital');
@@ -357,3 +357,12 @@ export default function BookAppointmentPage() {
     </div>
   );
 }
+
+export default function BookAppointmentPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>}>
+      <BookAppointmentForm />
+    </Suspense>
+  );
+}
+
