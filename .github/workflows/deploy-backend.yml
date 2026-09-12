@@ -82,7 +82,6 @@ jobs:
       - name: Deploy to Azure Container Apps
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: ${{ github.workspace }}/backend
           acrName: "" # Not using ACR
           containerAppName: lankacare-api
           resourceGroup: Lankacare
