@@ -1,6 +1,9 @@
-FROM node:20-slim
+FROM node:20-alpine
 
 WORKDIR /app
+
+# Install build tools for native dependencies (bcrypt, argon2)
+RUN apk add --no-cache python3 make g++
 
 # Copy package files
 COPY package*.json ./
