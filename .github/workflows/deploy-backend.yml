@@ -85,5 +85,5 @@ jobs:
           appSourcePath: ${{ github.workspace }}/backend
           acrName: "" # Not using ACR
           containerAppName: lankacare-api
-          resourceGroup: rg-lankacare-student
+          resourceGroup: Lankacare
           imageToDeploy: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
