@@ -18,10 +18,10 @@ function QualityCheck({ label, pass, message }: { label: string, pass: boolean |
 }
 
 export default function DataQualityPage() {
-  const { data: beds = [], isLoading: bedsLoading } = useQuery({ queryKey: ['dq-beds'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/beds`, { credentials: 'include' })).json()).data || [] });
-  const { data: doctors = [], isLoading: doctorsLoading } = useQuery({ queryKey: ['dq-doctors'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/doctors`, { credentials: 'include' })).json()).data || [] });
-  const { data: medicines = [], isLoading: medsLoading } = useQuery({ queryKey: ['dq-medicines'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/medicines`, { credentials: 'include' })).json()).data || [] });
-  const { data: blood = [], isLoading: bloodLoading } = useQuery({ queryKey: ['dq-blood'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/blood`, { credentials: 'include' })).json()).data || [] });
+  const { data: beds = [], isLoading: bedsLoading } = useQuery({ queryKey: ['dq-beds'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/beds`, { credentials: 'include' })).json()).data || [] });
+  const { data: doctors = [], isLoading: doctorsLoading } = useQuery({ queryKey: ['dq-doctors'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/doctors`, { credentials: 'include' })).json()).data || [] });
+  const { data: medicines = [], isLoading: medsLoading } = useQuery({ queryKey: ['dq-medicines'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/medicines`, { credentials: 'include' })).json()).data || [] });
+  const { data: blood = [], isLoading: bloodLoading } = useQuery({ queryKey: ['dq-blood'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/blood`, { credentials: 'include' })).json()).data || [] });
 
   const isLoading = bedsLoading || doctorsLoading || medsLoading || bloodLoading;
 

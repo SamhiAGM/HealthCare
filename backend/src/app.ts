@@ -30,15 +30,20 @@ app.use(helmet({
 /* ─── CORS ──────────────────────────────────────────────────────────── */
 app.use(cors({
   origin: (origin, cb) => {
-    const allowed = [
-      process.env.FRONTEND_URL,
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'https://www.lankacare.tech',
-      'https://lankacare.tech'
-    ].filter(Boolean);
+    const isProd = process.env.NODE_ENV === 'production';
+    const allowed = isProd 
+      ? [
+          'https://lankacare.me',
+          'https://www.lankacare.me',
+          process.env.FRONTEND_URL
+        ].filter(Boolean)
+      : [
+          process.env.FRONTEND_URL,
+          'http://localhost:3000',
+          'http://localhost:3001'
+        ].filter(Boolean);
     
-    if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app')) {
+    if (!origin || allowed.includes(origin)) {
       return cb(null, true);
     }
     return cb(new Error('Not allowed by CORS'));
@@ -70,6 +75,11 @@ app.use('/api/', globalLimiter);
 
 /* ─── Trust proxy (for Render/Railway deployment) ─────────────────── */
 app.set('trust proxy', 1);
+
+/* ─── Health check ──────────────────────────────────────────────────── */
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', version: '1.0.0' });
+});
 
 /* ─── Routes ────────────────────────────────────────────────────────── */
 app.use('/api/v1/auth', authRoutes);

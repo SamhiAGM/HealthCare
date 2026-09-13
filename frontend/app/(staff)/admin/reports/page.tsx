@@ -7,10 +7,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 const COLORS = ['#0D9488', '#1D4ED8', '#9333EA', '#DC2626', '#D97706', '#059669'];
 
 export default function ReportsPage() {
-  const { data: beds = [] } = useQuery({ queryKey: ['report-beds'], queryFn: async () => { const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/beds`, { credentials: 'include' }); return (await r.json()).data || []; } });
-  const { data: blood = [] } = useQuery({ queryKey: ['report-blood'], queryFn: async () => { const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/blood`, { credentials: 'include' }); return (await r.json()).data || []; } });
-  const { data: medicines = [] } = useQuery({ queryKey: ['report-medicine'], queryFn: async () => { const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/medicines`, { credentials: 'include' }); return (await r.json()).data || []; } });
-  const { data: admissions = [] } = useQuery({ queryKey: ['report-admissions'], queryFn: async () => { const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/admissions`, { credentials: 'include' }); return (await r.json()).data || []; } });
+  const { data: beds = [] } = useQuery({ queryKey: ['report-beds'], queryFn: async () => { const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/beds`, { credentials: 'include' }); return (await r.json()).data || []; } });
+  const { data: blood = [] } = useQuery({ queryKey: ['report-blood'], queryFn: async () => { const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/blood`, { credentials: 'include' }); return (await r.json()).data || []; } });
+  const { data: medicines = [] } = useQuery({ queryKey: ['report-medicine'], queryFn: async () => { const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/medicines`, { credentials: 'include' }); return (await r.json()).data || []; } });
+  const { data: admissions = [] } = useQuery({ queryKey: ['report-admissions'], queryFn: async () => { const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/admissions`, { credentials: 'include' }); return (await r.json()).data || []; } });
 
   const bedData = beds.map((b: any) => ({ name: b.wardType, occupied: b.occupied, available: b.available }));
   const bloodData = blood.map((b: any) => ({ name: b.bloodGroup, value: b.units }));

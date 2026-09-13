@@ -1,53 +1,69 @@
 # LankaCare Azure Deployment Guide
 
-This document provides the exact steps for the zero-out-of-pocket production deployment of the LankaCare application.
+This document outlines the steps for deploying the LankaCare architecture to Azure Container Apps (Consumption Plan).
 
-## 1. Resource Group
-- **Name**: `rg-lankacare-student`
-- **Subscription**: Azure for Students
-- **Tags**: `Project=LankaCare`, `Environment=Production`, `Owner=Student`, `CostProfile=FreeTier`
+## Architecture
+- **Frontend (Next.js)** -> `lankacare-web` on Azure Container Apps
+- **Backend (Express + Socket.io)** -> `lankacare-api` on Azure Container Apps
+- **Database** -> MongoDB Atlas
 
-## 2. Claiming the Free Domain (Phase 10)
-To redeem your free domain through the GitHub Student Developer Pack:
-1. Go to [GitHub Education](https://education.github.com/pack).
-2. Scroll to the **Domains** section and find **Name.com**, **Namecheap**, or **.TECH**.
-3. Click **Get Offer** and authenticate with your GitHub account.
-4. Search for your preferred domain (e.g., `lankacare.app`, `lankacare.dev`).
-5. Confirm the domain is covered by the student offer.
-6. Proceed to checkout. **CRITICAL: Before final confirmation, ensure the checkout total is $0.**
-7. Complete registration.
+## Prerequisites
+- Azure CLI installed and authenticated (`az login`)
+- An active Azure for Students Subscription
+- Docker installed
 
-## 3. Frontend Deployment (Azure Static Web Apps)
-- **Resource Name**: `lankacare-frontend`
-- **Plan**: Free
-- **Source**: GitHub Repository (`HealthCare`)
-- **Build Details**: 
-  - Framework: Next.js
-  - App Location: `/frontend`
-  - Output Location: `.next`
-- **Environment Variables**:
-  - `NEXT_PUBLIC_API_URL=https://api.<student-domain>/api/v1`
-  - `NEXT_PUBLIC_SOCKET_URL=https://api.<student-domain>`
-  - `NEXT_PUBLIC_APP_URL=https://www.<student-domain>`
+## 1. Create Resource Group & Environment
+```bash
+az group create --name rg-lankacare --location eastus
 
-## 4. Backend Deployment (Azure Container Apps)
-- **Resource Name**: `lankacare-api`
-- **Plan**: Consumption
-- **Scaling**: Minimum Replicas: 0 | Maximum Replicas: 1
-- **Ingress**: External, HTTP, Target Port: 5000 (or your Express `PORT`)
-- **Container Image**: Built via GitHub Actions and pulled from `ghcr.io` (GitHub Container Registry).
-- **Environment Variables**:
-  - `NODE_ENV=production`
-  - `MONGODB_URI=<Atlas Free Tier URI>`
-  - `FRONTEND_URL=https://www.<student-domain>`
-  - `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `NIC_ENCRYPTION_KEY`, etc. (Sourced from GitHub Secrets)
+az containerapp env create \
+  --name lankacare-env \
+  --resource-group rg-lankacare \
+  --location eastus
+```
 
-## 5. SSL / TLS Configuration
-Both frontend and backend utilize Azure's **Free Managed Certificates**.
-- Frontend: Managed automatically via Azure Static Web Apps Custom Domains tab.
-- Backend: Managed automatically via Azure Container Apps Ingress Custom Domains tab.
+## 2. Deploy Backend (`lankacare-api`) First
+Build and push the image to a container registry (e.g., ACR or GHCR), or use the GitHub CI/CD pipeline. To deploy manually via Azure CLI from local source (requires ACR or building remotely):
 
-## 6. Cost Protection
-- **Budgets**: Set Azure Budget alerts at $1, $5, and $10 against the subscription.
-- Ensure the backend Container App strictly scales to 0 when idle.
-- Monitor `FREE-TIER-LIMITS.md` boundaries monthly.
+```bash
+az containerapp up \
+  --name lankacare-api \
+  --resource-group rg-lankacare \
+  --environment lankacare-env \
+  --source ./backend \
+  --ingress external \
+  --target-port 8080 \
+  --min-replicas 0 \
+  --max-replicas 1 \
+  --env-vars NODE_ENV=production PORT=8080 FRONTEND_URL=https://lankacare.me
+```
+
+> **Test the Backend:** Wait for deployment to finish and grab the generated hostname (e.g., `lankacare-api.niceocean-abc1234.eastus.azurecontainerapps.io`). Visit `https://<generated-host>/api/health` to confirm it returns `{"status":"ok","version":"1.0.0"}`.
+
+## 3. Deploy Frontend (`lankacare-web`)
+Ensure backend is healthy, then deploy frontend:
+
+```bash
+az containerapp up \
+  --name lankacare-web \
+  --resource-group rg-lankacare \
+  --environment lankacare-env \
+  --source ./frontend \
+  --ingress external \
+  --target-port 3000 \
+  --min-replicas 0 \
+  --max-replicas 1 \
+  --env-vars \
+    NEXT_PUBLIC_APP_URL=https://lankacare.me \
+    NEXT_PUBLIC_API_URL=https://api.lankacare.me/api/v1 \
+    NEXT_PUBLIC_SOCKET_URL=https://api.lankacare.me
+```
+
+> **Test the Frontend:** Check the frontend Azure generated hostname (e.g., `lankacare-web.niceocean-abc1234.eastus.azurecontainerapps.io`) to verify login pages and routing work.
+
+## 4. Setup Custom Domains
+Refer to `docs/DNS.md` for DNS configurations.
+
+## 5. Cost Protection
+Ensure both `min-replicas=0` and `max-replicas=1` are configured on both container apps to leverage the consumption free grant effectively.
+Set up budget alerts in Azure Cost Management to notify you at low thresholds (e.g., $1 or $5).

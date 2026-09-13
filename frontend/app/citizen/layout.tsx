@@ -35,7 +35,7 @@ export default function CitizenDashboardLayout({ children }: DashboardLayoutProp
 
   const handleLogout = async () => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/auth/logout`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });

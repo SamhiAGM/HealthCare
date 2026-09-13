@@ -6,15 +6,15 @@ import { Activity, Bed, Droplets, Users, FlaskConical, ArrowRightLeft, Volume2, 
 export default function LiveMonitorPage() {
   const { data: queues = [] } = useQuery({
     queryKey: ['live-queues'], refetchInterval: 3000,
-    queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/queues`, { credentials: 'include' })).json()).data || []
+    queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/queues`, { credentials: 'include' })).json()).data || []
   });
   const { data: beds = [] } = useQuery({
     queryKey: ['live-beds'], refetchInterval: 10000,
-    queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/beds`, { credentials: 'include' })).json()).data || []
+    queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/beds`, { credentials: 'include' })).json()).data || []
   });
   const { data: admissions = [] } = useQuery({
     queryKey: ['live-admissions'], refetchInterval: 15000,
-    queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/admissions?status=Admitted`, { credentials: 'include' })).json()).data || []
+    queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/admissions?status=Admitted`, { credentials: 'include' })).json()).data || []
   });
 
   const waiting = queues.filter((q: any) => q.status === 'Waiting').length;

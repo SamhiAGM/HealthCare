@@ -4,9 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, Droplets, Bed, Pill, CheckCircle } from 'lucide-react';
 
 export default function AlertsPage() {
-  const { data: beds = [] } = useQuery({ queryKey: ['alerts-beds'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/beds`, { credentials: 'include' })).json()).data || [], refetchInterval: 30000 });
-  const { data: blood = [] } = useQuery({ queryKey: ['alerts-blood'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/blood`, { credentials: 'include' })).json()).data || [], refetchInterval: 30000 });
-  const { data: medicines = [] } = useQuery({ queryKey: ['alerts-medicines'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/v1/medicines`, { credentials: 'include' })).json()).data || [], refetchInterval: 30000 });
+  const { data: beds = [] } = useQuery({ queryKey: ['alerts-beds'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/beds`, { credentials: 'include' })).json()).data || [], refetchInterval: 30000 });
+  const { data: blood = [] } = useQuery({ queryKey: ['alerts-blood'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/blood`, { credentials: 'include' })).json()).data || [], refetchInterval: 30000 });
+  const { data: medicines = [] } = useQuery({ queryKey: ['alerts-medicines'], queryFn: async () => (await (await fetch(`${process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '')}/api/v1/medicines`, { credentials: 'include' })).json()).data || [], refetchInterval: 30000 });
 
   const alerts = [
     ...beds.filter((b: any) => ['Full', 'Critical'].includes(b.publicStatus)).map((b: any) => ({
