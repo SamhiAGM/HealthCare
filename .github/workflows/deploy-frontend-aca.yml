@@ -12,6 +12,7 @@ on:
       - main
     paths:
       - 'frontend/**'
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
