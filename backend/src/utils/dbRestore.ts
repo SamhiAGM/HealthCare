@@ -4,7 +4,7 @@ import path from 'path';
 
 export async function restoreDatabase() {
   try {
-    const dbDumpPath = path.join(__dirname, '..', '..', '.data', 'db_dump.json');
+    const dbDumpPath = path.join(process.cwd(), '.data', 'db_dump.json');
     
     // Check if dump exists
     try {

@@ -4,7 +4,7 @@ import path from 'path';
 
 export async function dumpDatabase() {
   try {
-    const dataDir = path.join(__dirname, '..', '..', '.data');
+    const dataDir = path.join(process.cwd(), '.data');
     await fs.mkdir(dataDir, { recursive: true });
     
     const dbDumpPath = path.join(dataDir, 'db_dump.json');

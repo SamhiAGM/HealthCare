@@ -214,10 +214,13 @@ async function seedData() {
 const server = http.createServer(app);
 
 connectDB().then(async () => {
-  const restored = await restoreDatabase();
-  
-  if (!restored) {
-    await seedData();
+  if (mongoose.connection.readyState !== 1) {
+    console.error('[SERVER] DB not connected — skipping restore/seed. Server will still start.');
+  } else {
+    const restored = await restoreDatabase();
+    if (!restored) {
+      await seedData();
+    }
   }
 
   // Initialize Socket.io
