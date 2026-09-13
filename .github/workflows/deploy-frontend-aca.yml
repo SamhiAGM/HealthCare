@@ -60,15 +60,11 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Container Apps
-        run: |
-          az containerapp registry set \
-            --name lankacare-frontend \
-            --resource-group Lankacare \
-            --server ${{ env.REGISTRY }} \
-            --username ${{ github.actor }} \
-            --password ${{ secrets.GITHUB_TOKEN }}
-            
-          az containerapp update \
-            --name lankacare-frontend \
-            --resource-group Lankacare \
-            --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          containerAppName: lankacare-frontend
+          resourceGroup: Lankacare
+          imageToDeploy: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          registryUrl: ${{ env.REGISTRY }}
+          registryUsername: ${{ github.actor }}
+          registryPassword: ${{ secrets.GITHUB_TOKEN }}
