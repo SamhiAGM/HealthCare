@@ -94,6 +94,16 @@ app.get('/api/v1/system/data-health', async (_req, res) => {
   }
 });
 
+/* ─── Root handler ──────────────────────────────────────────────────── */
+app.get('/', (_req, res) => {
+  res.json({ 
+    message: 'LankaCare API is running.', 
+    frontend: 'http://localhost:3000',
+    healthCheck: '/api/v1/system/health',
+    version: '1.0.0' 
+  });
+});
+
 /* ─── 404 handler ───────────────────────────────────────────────────── */
 app.use((req, res) => {
   res.status(404).json({ error: 'API endpoint not found' });

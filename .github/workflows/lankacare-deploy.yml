@@ -1,4 +1,4 @@
-name: LankaCare Azure Container Apps Deployment
+name: LankaCare — Deploy to Azure App Service
 
 on:
   push:
@@ -6,116 +6,78 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  FRONTEND_IMAGE: ghcr.io/${{ github.repository }}/lankacare-web
-  BACKEND_IMAGE: ghcr.io/${{ github.repository }}/lankacare-api
-  RESOURCE_GROUP: rg-lankacare
-  CONTAINER_APP_ENV: lankacare-env
-  FRONTEND_APP_NAME: lankacare-web
-  BACKEND_APP_NAME: lankacare-api
-
 jobs:
-  lint-and-test:
-    name: Lint, Typecheck & Test
+  # ──────────────────────────────────────────────────────────────
+  # JOB 1: Deploy Backend
+  # ──────────────────────────────────────────────────────────────
+  deploy-backend:
+    name: Build & Deploy Backend
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: backend/package-lock.json
 
-      - name: Install Dependencies
-        run: |
-          npm ci --prefix frontend
-          npm ci --prefix backend
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
 
-      - name: Lint and Typecheck Frontend
-        run: npm run lint --prefix frontend
+      - name: Build TypeScript to JavaScript
+        working-directory: ./backend
+        run: npm run build
 
-      - name: Lint and Typecheck Backend
-        run: npm run lint --prefix backend
+      - name: Deploy backend to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'lankacare-backend'
+          publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
+          package: './backend'
 
-      - name: Run Backend Tests
-        run: npm test --prefix backend
-
-  build-and-push:
-    name: Build & Push Containers
-    needs: lint-and-test
+  # ──────────────────────────────────────────────────────────────
+  # JOB 2: Deploy Frontend
+  # ──────────────────────────────────────────────────────────────
+  deploy-frontend:
+    name: Build & Deploy Frontend
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
-      - name: Build & Push Backend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: true
-          tags: ${{ env.BACKEND_IMAGE }}:${{ github.sha }},${{ env.BACKEND_IMAGE }}:latest
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci
 
-      - name: Build & Push Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: ${{ env.FRONTEND_IMAGE }}:${{ github.sha }},${{ env.FRONTEND_IMAGE }}:latest
-          build-args: |
-            NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_SOCKET_URL=${{ secrets.NEXT_PUBLIC_SOCKET_URL }}
+      - name: Build Next.js standalone
+        working-directory: ./frontend
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          NEXT_PUBLIC_SOCKET_URL: ${{ secrets.NEXT_PUBLIC_SOCKET_URL }}
+        run: npm run build
 
-  deploy-azure:
-    name: Deploy to Azure Container Apps
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log in to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Package standalone output
+        run: |
+          cp -r frontend/public frontend/.next/standalone/public
+          cp -r frontend/.next/static frontend/.next/standalone/.next/static
 
-      - name: Deploy Backend to Container App
-        uses: azure/container-apps-deploy-action@v1
+      - name: Deploy frontend to Azure App Service
+        uses: azure/webapps-deploy@v3
         with:
-          resourceGroup: ${{ env.RESOURCE_GROUP }}
-          containerAppName: ${{ env.BACKEND_APP_NAME }}
-          imageToDeploy: ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
-          environmentVariables: >
-            NODE_ENV=production
-            PORT=8080
-            FRONTEND_URL=${{ secrets.FRONTEND_URL }}
-            MONGODB_URI=${{ secrets.MONGODB_URI }}
-            JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}
-            JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
-            NIC_ENCRYPTION_KEY=${{ secrets.NIC_ENCRYPTION_KEY }}
-            EMAIL_HOST=${{ secrets.EMAIL_HOST }}
-            EMAIL_PORT=${{ secrets.EMAIL_PORT }}
-            EMAIL_USER=${{ secrets.EMAIL_USER }}
-            EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
-            SMS_PROVIDER=${{ secrets.SMS_PROVIDER }}
-            SMS_API_KEY=${{ secrets.SMS_API_KEY }}
-
-      - name: Deploy Frontend to Container App
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          resourceGroup: ${{ env.RESOURCE_GROUP }}
-          containerAppName: ${{ env.FRONTEND_APP_NAME }}
-          imageToDeploy: ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          app-name: 'lankacare-frontend'
+          publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
+          package: './frontend/.next/standalone'
