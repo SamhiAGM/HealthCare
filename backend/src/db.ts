@@ -6,7 +6,7 @@ let mongoServer: any = null;
 
 export const connectDB = async () => {
   try {
-    let mongoUri = process.env.MONGODB_URI;
+    let mongoUri = process.env.MONGODB_URI as string;
     
     if (!mongoUri) {
       throw new Error('CRITICAL: MONGODB_URI environment variable is not defined.');
