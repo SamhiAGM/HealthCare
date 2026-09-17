@@ -70,6 +70,7 @@ jobs:
 
       - name: Package standalone output
         run: |
+          mkdir -p frontend/.next/standalone/.next
           cp -r frontend/public frontend/.next/standalone/public
           cp -r frontend/.next/static frontend/.next/standalone/.next/static
 
