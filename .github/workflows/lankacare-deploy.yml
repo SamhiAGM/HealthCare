@@ -32,12 +32,15 @@ jobs:
         working-directory: ./backend
         run: npm run build
 
+      - name: Zip backend artifact
+        run: cd backend && zip -r ../backend.zip .
+
       - name: Deploy backend to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'lankacare-backend'
           publish-profile: ${{ secrets.AZURE_BACKEND_PUBLISH_PROFILE }}
-          package: './backend'
+          package: 'backend.zip'
 
   # ──────────────────────────────────────────────────────────────
   # JOB 2: Deploy Frontend
@@ -73,10 +76,11 @@ jobs:
           mkdir -p frontend/.next/standalone/.next
           cp -r frontend/public frontend/.next/standalone/public
           cp -r frontend/.next/static frontend/.next/standalone/.next/static
+          cd frontend/.next/standalone && zip -r ../../../frontend.zip .
 
       - name: Deploy frontend to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'lankacare-frontend'
           publish-profile: ${{ secrets.AZURE_FRONTEND_PUBLISH_PROFILE }}
-          package: './frontend/.next/standalone'
+          package: 'frontend.zip'
